@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author smile鲨鱼
- * @since 2025年08月04日
+ * @since 2025年08月06日
  */
 @Service
 public class StyleOfCookingServiceImp extends ServiceImpl<StyleOfCookingMapper, StyleOfCooking> implements StyleOfCookingService {

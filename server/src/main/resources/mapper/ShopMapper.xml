@@ -16,11 +16,12 @@
         <result column="is_take_out" property="isTakeOut" />
         <result column="opening_hours_start" property="openingHoursStart" />
         <result column="opening_hours_end" property="openingHoursEnd" />
+        <result column="name" property="name" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        shop_id, shop_order, area_id, address, phone, create_date, people_num, state, is_dine_in, is_take_out, opening_hours_start, opening_hours_end
+        shop_id, shop_order, area_id, address, phone, create_date, people_num, state, is_dine_in, is_take_out, opening_hours_start, opening_hours_end, name
     </sql>
 
 </mapper>

@@ -1,7 +1,12 @@
 package com.smileshark.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.smileshark.common.Result;
+import com.smileshark.entity.RawMaterialType;
+import com.smileshark.service.RawMaterialTypeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,6 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/rawMaterialType")
+@RequiredArgsConstructor
 public class RawMaterialTypeController {
+    private final RawMaterialTypeService rawMaterialTypeService;
 
+    @GetMapping("/list")
+    public Result<List<RawMaterialType>> list() {
+        return rawMaterialTypeService.rawMaterialTypeList();
+    }
+    @PostMapping("/add")
+    public Result<?> add(@RequestBody RawMaterialType rawMaterialType){
+        return rawMaterialTypeService.add(rawMaterialType);
+    }
+    @DeleteMapping("/delete")
+    public Result<?> delete(@RequestParam String id){
+        return rawMaterialTypeService.delete(id);
+    }
 }

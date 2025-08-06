@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author smile鲨鱼
- * @since 2025年08月04日
+ * @since 2025年08月06日
  */
 @RestController
 @RequestMapping("/cuisineComponent")

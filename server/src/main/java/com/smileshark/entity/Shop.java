@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author smile鲨鱼
- * @since 2025年08月04日
+ * @since 2025年08月06日
  */
 @Getter
 @Setter
@@ -89,4 +89,7 @@ public class Shop {
      */
     @TableField("opening_hours_end")
     private LocalTime openingHoursEnd;
+
+    @TableField("name")
+    private String name;
 }

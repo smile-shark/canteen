@@ -6,11 +6,13 @@
     <resultMap id="BaseResultMap" type="com.smileshark.entity.StyleOfCooking">
         <id column="style_of_cooking_id" property="styleOfCookingId" />
         <result column="name" property="name" />
+        <result column="num" property="num" />
+        <result column="remark" property="remark" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        style_of_cooking_id, name
+        style_of_cooking_id, name, num, remark
     </sql>
 
 </mapper>

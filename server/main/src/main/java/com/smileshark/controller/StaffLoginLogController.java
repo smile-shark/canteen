@@ -1,8 +1,13 @@
 package com.smileshark.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.smileshark.common.Result;
+import com.smileshark.entity.StaffLoginLog;
+import com.smileshark.service.StaffLoginLogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 /**
  * <p>
@@ -16,5 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/staffLoginLog")
 @RequiredArgsConstructor
 public class StaffLoginLogController {
-
+    private final StaffLoginLogService staffLoginLogService;
+    @GetMapping("/pageList")
+   public Result<Page<StaffLoginLog>> pageList(@RequestParam(defaultValue = "1")Integer page, @RequestParam(defaultValue = "10")Integer size, @RequestParam(required = false)String shopId, @RequestParam(required = false)LocalDate startDate, @RequestParam(required = false)LocalDate endDate){
+        return staffLoginLogService.pageList(page, size, shopId, startDate, endDate);
+    }
 }

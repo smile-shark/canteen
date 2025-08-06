@@ -1,7 +1,12 @@
 package com.smileshark.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.smileshark.common.Result;
+import com.smileshark.entity.Taste;
+import com.smileshark.service.TasteService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,6 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/taste")
+@RequiredArgsConstructor
 public class TasteController {
-
+    private final TasteService tasteService;
+    @GetMapping("/list")
+    public Result<List<Taste>> tasteList() {
+        return tasteService.tasteList();
+    }
+    @PostMapping("/add")
+    public Result<?> addTaste(@RequestBody Taste taste) {
+        return tasteService.add(taste);
+    }
+    @DeleteMapping("/delete")
+    public Result<?> deleteTaste(@RequestParam String id) {
+        return tasteService.delete(id);
+    }
 }

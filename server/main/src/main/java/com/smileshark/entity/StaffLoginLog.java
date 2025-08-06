@@ -44,4 +44,13 @@ public class StaffLoginLog {
      */
     @TableField("login_ip")
     private String loginIp;
+
+    @TableField(exist = false)
+    private String staffJobNum;
+    @TableField(exist = false)
+    private String staffName;
+    @TableField(exist = false)
+    private String shopName;
+    @TableField(exist = false)
+    private Integer staffType;
 }

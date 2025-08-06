@@ -14,11 +14,12 @@
         <result column="type" property="type" />
         <result column="shop_id" property="shopId" />
         <result column="state" property="state" />
+        <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        staff_id, name, account, phone, password, perssion, job_num, type, shop_id, state
+        staff_id, name, account, phone, password, perssion, job_num, type, shop_id, state, create_time
     </sql>
 
 </mapper>

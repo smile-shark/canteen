@@ -1,7 +1,10 @@
 package com.smileshark.service;
 
+import com.smileshark.common.Result;
 import com.smileshark.entity.StyleOfCooking;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface StyleOfCookingService extends IService<StyleOfCooking> {
 
+    Result<List<StyleOfCooking>> styleOfCookingList();
+
+    Result<?> add(StyleOfCooking styleOfCooking);
+
+    Result<?> delete(String id);
 }

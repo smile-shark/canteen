@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -14,7 +15,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author smile鲨鱼
- * @since 2025年08月04日
+ * @since 2025年08月06日
  */
 @Getter
 @Setter
@@ -81,4 +82,10 @@ public class Staff {
      */
     @TableField("state")
     private Integer state;
+
+    /**
+     * 入职日期
+     */
+    @TableField("create_time")
+    private LocalDateTime createTime;
 }

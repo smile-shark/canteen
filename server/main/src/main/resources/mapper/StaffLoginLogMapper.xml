@@ -14,5 +14,28 @@
     <sql id="Base_Column_List">
         staff_id, login_time, quit_time, login_ip
     </sql>
-
+    <resultMap id="pageListMap" type="com.smileshark.entity.StaffLoginLog">
+        <result column="staff_id" property="staffId" />
+        <result column="login_time" property="loginTime" />
+        <result column="quit_time" property="quitTime" />
+        <result column="login_ip" property="loginIp" />
+        <result column="staff_job_num" property="staffJobNum" />
+        <result column="staff_name" property="staffName" />
+        <result column="shop_name" property="shopName" />
+        <result column="staff_type" property="staffType" />
+    </resultMap>
+    <select id="pageList" resultMap="pageListMap">
+        select
+            login_time,quit_time,login_ip,staff_login_log.staff_id,staff.job_num as staff_job_num,staff.name as staff_name,shop.name as shop_name,staff.type as staff_type
+            from staff_login_log join staff on staff.staff_id = staff_login_log.staff_id join shop on shop.shop_id = staff.shop_id
+        <where>
+            <if test="shopId!=null and shopId!=''">
+                shop.shop_id = #{shopId}
+            </if>
+        <if test="startDate!=null and endDate!=null">
+            and staff_login_log.login_time between #{startDate} and #{endDate}
+        </if>
+        </where>
+        order by staff_login_log.login_time desc
+    </select>
 </mapper>

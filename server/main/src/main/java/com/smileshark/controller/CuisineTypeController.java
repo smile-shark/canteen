@@ -1,7 +1,12 @@
 package com.smileshark.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.smileshark.common.Result;
+import com.smileshark.entity.CuisineType;
+import com.smileshark.service.CuisineTypeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,6 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/cuisineType")
+@RequiredArgsConstructor
 public class CuisineTypeController {
-
+    private final CuisineTypeService cuisineTypeService;
+    @GetMapping("/list")
+    public Result<List<CuisineType>> list() {
+        return cuisineTypeService.cuisineTypeList();
+    }
+    @PostMapping("/add")
+    public Result<?> add(@RequestBody CuisineType cuisineType) {
+        return cuisineTypeService.add(cuisineType);
+    }
+    @DeleteMapping("/delete")
+    public Result<?> delete(@RequestParam String id) {
+        return cuisineTypeService.cuisineTypeDelete(id);
+    }
 }
