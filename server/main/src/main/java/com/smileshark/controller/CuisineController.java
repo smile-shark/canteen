@@ -1,7 +1,11 @@
 package com.smileshark.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.smileshark.common.Result;
+import com.smileshark.entity.Cuisine;
+import com.smileshark.service.CuisineService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -13,6 +17,28 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/cuisine")
+@RequiredArgsConstructor
 public class CuisineController {
+    private final CuisineService cuisineService;
 
+    @GetMapping("/pageList")
+    public Result<Page<Cuisine>> pageList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String cuisineName, @RequestParam(required = false) String cuisineType, @RequestParam(required = false) Integer state) {
+        return cuisineService.pageList(page, size, cuisineName, cuisineType, state);
+    }
+    @GetMapping("/infoById")
+    public Result<Cuisine> infoById(@RequestParam String id){
+        return cuisineService.getInfoById(id);
+    }
+    @PostMapping("/add")
+    public Result<?> add(@RequestBody Cuisine cuisine){
+        return cuisineService.add(cuisine);
+    }
+    @PutMapping("/update")
+    public Result<?> update(@RequestBody Cuisine cuisine){
+        return cuisineService.updateCuisine(cuisine);
+    }
+    @DeleteMapping("/delete")
+    public Result<?> delete(@RequestParam String id) {
+        return cuisineService.deleteCuisine(id);
+    }
 }

@@ -72,25 +72,25 @@ public class DiscountCoupon {
      * 发放的数量
      */
     @TableField("grant_num")
-    private byte[] grantNum;
+    private Long grantNum;
 
     /**
      * 剩余的数量
      */
     @TableField("surplus_num")
-    private byte[] surplusNum;
+    private Long surplusNum;
 
     /**
      * 优惠券的使用量，有些可能领取了但是没有被使用
      */
     @TableField("use_num")
-    private byte[] useNum;
+    private Long useNum;
 
     /**
      * 每人限制领取的数量
      */
     @TableField("astrict_num")
-    private byte[] astrictNum;
+    private Long astrictNum;
 
     /**
      * 所属的门店

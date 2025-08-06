@@ -34,4 +34,32 @@
         cuisine_id, name, num, price, creation_method, meat_vegetable, main_ingredient, ingredients, style_of_cooking_id, cuisine_component_id, cuisine_type_id, shop_id, state, is_special_offer, special_offer, taste_id, min_num, inventory, introduce, take_out_show, dine_in_show, warning_min, warning_max
     </sql>
 
+    <resultMap id="pageListMap" type="com.smileshark.entity.Cuisine">
+        <id column="cuisine_id" property="cuisineId" />
+        <result column="name" property="name" />
+        <result column="num" property="num" />
+        <result column="price" property="price" />
+        <result column="state" property="state" />
+        <result column="url" property="image" />
+    </resultMap>
+
+    <select id="pageList" resultMap="pageListMap">
+        select cuisine.name,cuisine.cuisine_type_id,cuisine.price,cuisine.num,cuisine.state,min(cuisine_image.url) as url ,cuisine.cuisine_id
+        from cuisine join cuisine_type on cuisine.cuisine_type_id = cuisine_type.cuisine_type_id left join
+        cuisine_image on cuisine.cuisine_id = cuisine_image.cuisine_id
+        <where>
+            <if test="name!=null and name!=''">
+                and cuisine.name like #{name}
+            </if>
+            <if test="cuisineType!=null and cuisineType!=''">
+                and cuisine_type.cuisine_type_id = #{cuisineType}
+            </if>
+            <if test="state!=null">
+                and cuisine.state = #{state}
+            </if>
+        </where>
+        group by cuisine.cuisine_id
+        order by cuisine.num
+    </select>
+
 </mapper>

@@ -34,7 +34,7 @@ public class Customer {
      * 积分
      */
     @TableField("integral")
-    private byte[] integral;
+    private Long integral;
 
     /**
      * 客户对用的钱包
@@ -76,7 +76,7 @@ public class Customer {
      * 消费的总次数
      */
     @TableField("consumption_num")
-    private byte[] consumptionNum;
+    private Long consumptionNum;
 
     /**
      * 默认的收货地址

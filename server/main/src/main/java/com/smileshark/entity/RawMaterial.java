@@ -59,17 +59,17 @@ public class RawMaterial {
      * 库存数量
      */
     @TableField("inventory")
-    private byte[] inventory;
+    private Long inventory;
 
     /**
      * 库存过低预警数量
      */
     @TableField("warning_min")
-    private byte[] warningMin;
+    private Long warningMin;
 
     /**
      * 库存过高预警数量
      */
     @TableField("warning_max")
-    private byte[] warningMax;
+    private Long warningMax;
 }

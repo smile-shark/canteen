@@ -1,5 +1,7 @@
 package com.smileshark.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.smileshark.common.Result;
 import com.smileshark.entity.Cuisine;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +15,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CuisineService extends IService<Cuisine> {
 
+    Result<Page<Cuisine>> pageList(Integer page, Integer size, String cuisineName, String cuisineType, Integer state);
+
+    Result<?> add(Cuisine cuisine);
+
+    Result<?> deleteCuisine(String id);
+
+    Result<?> updateCuisine(Cuisine cuisine);
+
+    Result<Cuisine> getInfoById(String id);
 }

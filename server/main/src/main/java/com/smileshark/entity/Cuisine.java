@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜品详情
@@ -125,7 +127,7 @@ public class Cuisine {
      * 库存数量
      */
     @TableField("inventory")
-    private byte[] inventory;
+    private Long inventory;
 
     /**
      * 菜品的介绍
@@ -149,11 +151,16 @@ public class Cuisine {
      * 库存过低预警数量
      */
     @TableField("warning_min")
-    private byte[] warningMin;
+    private Long warningMin;
 
     /**
      * 库存过高预警数量
      */
     @TableField("warning_max")
-    private byte[] warningMax;
+    private Long warningMax;
+
+    @TableField(exist = false)
+    private String image;
+    @TableField(exist = false)
+    private List<CuisineImage> cuisineImages;
 }

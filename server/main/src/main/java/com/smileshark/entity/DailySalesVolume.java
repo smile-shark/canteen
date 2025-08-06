@@ -37,5 +37,5 @@ public class DailySalesVolume {
      * 每日的销售数量
      */
     @TableField("num")
-    private byte[] num;
+    private Long num;
 }

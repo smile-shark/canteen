@@ -1,5 +1,7 @@
 package com.smileshark.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.smileshark.common.Result;
 import com.smileshark.entity.RawMaterial;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RawMaterialService extends IService<RawMaterial> {
 
+    Result<Page<RawMaterial>> pageList(Integer page, Integer size, String name, String rawMaterialTypeId);
+
+    Result<?> add(RawMaterial rawMaterial);
+
+    Result<?> updateRawMaterial(RawMaterial rawMaterial);
+
+    Result<?> delete(String id);
 }
