@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.WalletTransactionRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.WalletTransactionRecord">
+        <id column="wallet_transaction_record_id" property="walletTransactionRecordId" />
+        <result column="wallet_id" property="walletId" />
+        <result column="type" property="type" />
+        <result column="balance" property="balance" />
+        <result column="record_fun" property="recordFun" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        wallet_transaction_record_id, wallet_id, type, balance, record_fun
+    </sql>
+
+</mapper>

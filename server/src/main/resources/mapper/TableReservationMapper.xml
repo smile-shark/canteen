@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.TableReservationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.TableReservation">
+        <id column="table_reservation_id" property="tableReservationId" />
+        <result column="shop_id" property="shopId" />
+        <result column="customer_id" property="customerId" />
+        <result column="staff_id" property="staffId" />
+        <result column="reservation_date" property="reservationDate" />
+        <result column="reservation_time" property="reservationTime" />
+        <result column="dining_table_type_id" property="diningTableTypeId" />
+        <result column="people_num" property="peopleNum" />
+        <result column="table_num" property="tableNum" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="remake" property="remake" />
+        <result column="state" property="state" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        table_reservation_id, shop_id, customer_id, staff_id, reservation_date, reservation_time, dining_table_type_id, people_num, table_num, name, phone, remake, state, create_time
+    </sql>
+
+</mapper>

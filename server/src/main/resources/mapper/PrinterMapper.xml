@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.PrinterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.Printer">
+        <id column="printer_id" property="printerId" />
+        <result column="num" property="num" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="receipt_type" property="receiptType" />
+        <result column="brand" property="brand" />
+        <result column="sn_num" property="snNum" />
+        <result column="printer_key" property="printerKey" />
+        <result column="receipt_specification" property="receiptSpecification" />
+        <result column="shop_id" property="shopId" />
+        <result column="state" property="state" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        printer_id, num, name, type, receipt_type, brand, sn_num, printer_key, receipt_specification, shop_id, state
+    </sql>
+
+</mapper>

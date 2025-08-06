@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.CustomerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.Customer">
+        <id column="customer_id" property="customerId" />
+        <result column="integral" property="integral" />
+        <result column="wallet_id" property="walletId" />
+        <result column="head_portrait" property="headPortrait" />
+        <result column="account" property="account" />
+        <result column="password" property="password" />
+        <result column="level" property="level" />
+        <result column="consumption_plance" property="consumptionPlance" />
+        <result column="consumption_num" property="consumptionNum" />
+        <result column="delivery_address_id" property="deliveryAddressId" />
+        <result column="phone" property="phone" />
+        <result column="sex" property="sex" />
+        <result column="birthday" property="birthday" />
+        <result column="create_time" property="createTime" />
+        <result column="shop_id" property="shopId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        customer_id, integral, wallet_id, head_portrait, account, password, level, consumption_plance, consumption_num, delivery_address_id, phone, sex, birthday, create_time, shop_id
+    </sql>
+
+</mapper>

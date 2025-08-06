@@ -1,0 +1,57 @@
+package com.smileshark.service.imp;
+
+import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.smileshark.code.ResultCode;
+import com.smileshark.common.Result;
+import com.smileshark.entity.Shop;
+import com.smileshark.exception.BusinessException;
+import com.smileshark.mapper.ShopMapper;
+import com.smileshark.service.ShopService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.smileshark.utils.StrUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 门店表 服务实现类
+ * </p>
+ *
+ * @author smile鲨鱼
+ * @since 2025年08月03日
+ */
+@Service
+@RequiredArgsConstructor
+public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements ShopService {
+
+    @Override
+    public Result<?> addShop(Shop shop) {
+        shop.setShopId(IdUtil.simpleUUID());
+        if(this.save(shop)){
+            return Result.success("添加成功");
+        }else {
+            throw new BusinessException(ResultCode.ADD_ERROR);
+        }
+    }
+
+    @Override
+    public Result<Page<Shop>> pageList(Integer page, Integer size, String num, Integer state) {
+        LambdaQueryChainWrapper<Shop> orderByCreateDateDesc = lambdaQuery().last("order by create_date desc");
+        // 模糊匹配
+        orderByCreateDateDesc.like(Shop::getShopOrder, StrUtil.globbing(num));
+        // 状态匹配
+        if(state != null){
+            orderByCreateDateDesc.eq(Shop::getState, state);
+        }
+        return Result.success(orderByCreateDateDesc.page(new Page<>(page, size)));
+    }
+
+    @Override
+    public Result<List<Shop>> simpleList() {
+        return Result.success(lambdaQuery().select(Shop::getShopId,Shop::getName).list());
+    }
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.DiscountCouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.DiscountCoupon">
+        <id column="discount_coupon_id" property="discountCouponId" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="price" property="price" />
+        <result column="discount" property="discount" />
+        <result column="condition" property="condition" />
+        <result column="grant_num" property="grantNum" />
+        <result column="surplus_num" property="surplusNum" />
+        <result column="use_num" property="useNum" />
+        <result column="astrict_num" property="astrictNum" />
+        <result column="shop_id" property="shopId" />
+        <result column="use_area" property="useArea" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        discount_coupon_id, start_time, end_time, name, type, price, discount, condition, grant_num, surplus_num, use_num, astrict_num, shop_id, use_area
+    </sql>
+
+</mapper>

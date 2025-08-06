@@ -1,0 +1,16 @@
+package com.smileshark.service;
+
+import com.smileshark.entity.DiningTableType;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * <p>
+ * 餐桌类型 服务类
+ * </p>
+ *
+ * @author smile鲨鱼
+ * @since 2025年08月04日
+ */
+public interface DiningTableTypeService extends IService<DiningTableType> {
+
+}

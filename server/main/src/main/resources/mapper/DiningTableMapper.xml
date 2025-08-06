@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.DiningTableMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.DiningTable">
+        <id column="dining_table_id" property="diningTableId" />
+        <result column="serial_number" property="serialNumber" />
+        <result column="dining_table_type_id" property="diningTableTypeId" />
+        <result column="user_state" property="userState" />
+        <result column="shop_id" property="shopId" />
+        <result column="state" property="state" />
+        <result column="qr_code" property="qrCode" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        dining_table_id, serial_number, dining_table_type_id, user_state, shop_id, state, qr_code
+    </sql>
+
+</mapper>

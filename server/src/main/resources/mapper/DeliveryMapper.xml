@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.DeliveryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.Delivery">
+        <result column="shop_id" property="shopId" />
+        <result column="delivery_time_start" property="deliveryTimeStart" />
+        <result column="delivery_time_end" property="deliveryTimeEnd" />
+        <result column="is_full_free_delivery" property="isFullFreeDelivery" />
+        <result column="full_free_delivery_price" property="fullFreeDeliveryPrice" />
+        <result column="payment_method" property="paymentMethod" />
+        <result column="area" property="area" />
+        <result column="area_delivery_price" property="areaDeliveryPrice" />
+        <result column="distance_start_num" property="distanceStartNum" />
+        <result column="distance_start_price" property="distanceStartPrice" />
+        <result column="distance_add_num" property="distanceAddNum" />
+        <result column="distance_add_price" property="distanceAddPrice" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        shop_id, delivery_time_start, delivery_time_end, is_full_free_delivery, full_free_delivery_price, payment_method, area, area_delivery_price, distance_start_num, distance_start_price, distance_add_num, distance_add_price
+    </sql>
+
+</mapper>

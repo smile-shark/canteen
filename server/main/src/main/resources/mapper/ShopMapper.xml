@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.ShopMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.Shop">
+        <id column="shop_id" property="shopId" />
+        <result column="shop_order" property="shopOrder" />
+        <result column="area_id" property="areaId" />
+        <result column="address" property="address" />
+        <result column="phone" property="phone" />
+        <result column="create_date" property="createDate" />
+        <result column="people_num" property="peopleNum" />
+        <result column="state" property="state" />
+        <result column="is_dine_in" property="isDineIn" />
+        <result column="is_take_out" property="isTakeOut" />
+        <result column="opening_hours_start" property="openingHoursStart" />
+        <result column="opening_hours_end" property="openingHoursEnd" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        shop_id, shop_order, area_id, address, phone, create_date, people_num, state, is_dine_in, is_take_out, opening_hours_start, opening_hours_end
+    </sql>
+
+</mapper>

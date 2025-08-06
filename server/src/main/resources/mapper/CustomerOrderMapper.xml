@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.CustomerOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.CustomerOrder">
+        <id column="customer_order_id" property="customerOrderId" />
+        <result column="customer_id" property="customerId" />
+        <result column="staff_id" property="staffId" />
+        <result column="all_price" property="allPrice" />
+        <result column="state" property="state" />
+        <result column="packing_charges" property="packingCharges" />
+        <result column="delivery_cost" property="deliveryCost" />
+        <result column="discount_coupon_customer_id" property="discountCouponCustomerId" />
+        <result column="tableware_num" property="tablewareNum" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="pay_time" property="payTime" />
+        <result column="source" property="source" />
+        <result column="type" property="type" />
+        <result column="dining_table_id" property="diningTableId" />
+        <result column="delivery_address_id" property="deliveryAddressId" />
+        <result column="pay_type" property="payType" />
+        <result column="delete" property="delete" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        customer_order_id, customer_id, staff_id, all_price, state, packing_charges, delivery_cost, discount_coupon_customer_id, tableware_num, remark, create_time, pay_time, source, type, dining_table_id, delivery_address_id, pay_type, delete
+    </sql>
+
+</mapper>

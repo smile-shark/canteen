@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.DrawbackApplicationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.DrawbackApplication">
+        <id column="customer_order_id" property="customerOrderId" />
+        <result column="state" property="state" />
+        <result column="drawback_reason" property="drawbackReason" />
+        <result column="rejeck_reason" property="rejeckReason" />
+        <result column="balance" property="balance" />
+        <result column="staff_id" property="staffId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        customer_order_id, state, drawback_reason, rejeck_reason, balance, staff_id
+    </sql>
+
+</mapper>

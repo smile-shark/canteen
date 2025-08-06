@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.ReceiptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.Receipt">
+        <result column="type" property="type" />
+        <result column="shop_name" property="shopName" />
+        <result column="title_welecome" property="titleWelecome" />
+        <result column="title_welecome_word" property="titleWelecomeWord" />
+        <result column="receipt_type" property="receiptType" />
+        <result column="table_num" property="tableNum" />
+        <result column="people_num" property="peopleNum" />
+        <result column="oreder_num" property="orederNum" />
+        <result column="oreder_create_time" property="orederCreateTime" />
+        <result column="cuisine_detail" property="cuisineDetail" />
+        <result column="remark" property="remark" />
+        <result column="pay_detail" property="payDetail" />
+        <result column="discount_detail" property="discountDetail" />
+        <result column="shop_address" property="shopAddress" />
+        <result column="shop_phone" property="shopPhone" />
+        <result column="wechat_public_account_qr_code" property="wechatPublicAccountQrCode" />
+        <result column="mini_program_qr_code" property="miniProgramQrCode" />
+        <result column="closing_remarks_gratitude" property="closingRemarksGratitude" />
+        <result column="closing_remarks_gratitude_word" property="closingRemarksGratitudeWord" />
+        <result column="customer_name" property="customerName" />
+        <result column="customer_phone" property="customerPhone" />
+        <result column="customer_address" property="customerAddress" />
+        <result column="take_out_time" property="takeOutTime" />
+        <result column="food_container_cost" property="foodContainerCost" />
+        <result column="delivery_cost" property="deliveryCost" />
+        <result column="recharge_time" property="rechargeTime" />
+        <result column="recharge_detail" property="rechargeDetail" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        type, shop_name, title_welecome, title_welecome_word, receipt_type, table_num, people_num, oreder_num, oreder_create_time, cuisine_detail, remark, pay_detail, discount_detail, shop_address, shop_phone, wechat_public_account_qr_code, mini_program_qr_code, closing_remarks_gratitude, closing_remarks_gratitude_word, customer_name, customer_phone, customer_address, take_out_time, food_container_cost, delivery_cost, recharge_time, recharge_detail
+    </sql>
+
+</mapper>

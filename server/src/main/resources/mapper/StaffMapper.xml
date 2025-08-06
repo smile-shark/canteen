@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.StaffMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.Staff">
+        <id column="staff_id" property="staffId" />
+        <result column="name" property="name" />
+        <result column="account" property="account" />
+        <result column="phone" property="phone" />
+        <result column="password" property="password" />
+        <result column="perssion" property="perssion" />
+        <result column="job_num" property="jobNum" />
+        <result column="type" property="type" />
+        <result column="shop_id" property="shopId" />
+        <result column="state" property="state" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        staff_id, name, account, phone, password, perssion, job_num, type, shop_id, state
+    </sql>
+
+</mapper>

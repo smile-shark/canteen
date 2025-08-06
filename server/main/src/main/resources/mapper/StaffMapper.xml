@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smileshark.mapper.StaffMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.smileshark.entity.Staff">
+        <id column="staff_id" property="staffId"/>
+        <result column="name" property="name"/>
+        <result column="account" property="account"/>
+        <result column="phone" property="phone"/>
+        <result column="password" property="password"/>
+        <result column="perssion" property="perssion"/>
+        <result column="job_num" property="jobNum"/>
+        <result column="type" property="type"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        staff_id, name, account, phone, password, perssion, job_num, type, shop_id, state
+    </sql>
+
+    <resultMap id="selectStaffPageListMap" type="com.smileshark.entity.Staff">
+        <id column="staff_id" property="staffId"/>
+        <result column="name" property="name"/>
+        <result column="account" property="account"/>
+        <result column="phone" property="phone"/>
+        <result column="password" property="password"/>
+        <result column="perssion" property="perssion"/>
+        <result column="job_num" property="jobNum"/>
+        <result column="type" property="type"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <result column="shop_name" property="shopName"/>
+    </resultMap>
+
+    <select id="selectStaffPageList" resultMap="selectStaffPageListMap">
+        select staff.staff_id, staff.name, staff.account, staff.phone, staff.password, staff.perssion, staff.job_num,staff.create_time,
+        staff.type, staff.shop_id, staff.state,
+        shop.name as shop_name
+        from staff
+        left join shop  on shop.shop_id = staff.shop_id
+        <where>
+            <if test="num!=null">
+                (staff.name like #{num} or staff.job_num like #{num} or staff.phone like #{num})
+            </if>
+            <if test="shopId!=null and shopId!=''">
+                and staff.shop_id = #{shopId}
+            </if>
+            <if test="state!=null">
+                and staff.state = #{state}
+            </if>
+        </where>
+    </select>
+
+</mapper>

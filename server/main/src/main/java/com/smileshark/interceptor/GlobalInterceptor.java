@@ -1,0 +1,18 @@
+package com.smileshark.interceptor;
+
+import com.smileshark.utils.InfoThreadLocal;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+@Component
+public class GlobalInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("uri = " + request.getRequestURI());
+        InfoThreadLocal.setRequest(request);
+        InfoThreadLocal.setResponse(response);
+        return true;
+
+    }
+}
