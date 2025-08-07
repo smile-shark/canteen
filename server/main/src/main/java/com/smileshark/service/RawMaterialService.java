@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RawMaterialService extends IService<RawMaterial> {
 
-    Result<Page<RawMaterial>> pageList(Integer page, Integer size, String name, String rawMaterialTypeId);
+    Result<Page<RawMaterial>> pageList(Integer page, Integer size, String name, String rawMaterialTypeId, String shopId);
 
     Result<?> add(RawMaterial rawMaterial);
 

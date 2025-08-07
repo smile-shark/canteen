@@ -44,4 +44,16 @@ private final ShopService shopService;
     public Result<List<Shop>> simpleList(){
         return shopService.simpleList();
     }
+    @GetMapping("/pageListDineIn")
+    public Result<Page<Shop>> pageListDineIn(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String shopId, @RequestParam(required = false) Integer isDineIn){
+        return shopService.pageListDineIn(page, size, shopId, isDineIn);
+    }
+    @GetMapping("/pageListTakeOut")
+    public Result<Page<Shop>> pageListTakeOut(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String shopId, @RequestParam(required = false) Integer isTakeOut){
+        return shopService.pageListTakeOut(page, size, shopId, isTakeOut);
+    }
+    @GetMapping("/pageListByRange")
+    public Result<List<Shop>> pageListByRange(@RequestParam(defaultValue = "1") Integer page,@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) Integer isDineIn,@RequestParam(required = false)Integer isTakeOut ){
+        return shopService.pageListByRange(page, size, isDineIn, isTakeOut);
+    }
 }

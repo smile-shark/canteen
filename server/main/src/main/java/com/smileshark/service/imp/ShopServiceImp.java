@@ -54,4 +54,47 @@ public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements Sho
     public Result<List<Shop>> simpleList() {
         return Result.success(lambdaQuery().select(Shop::getShopId,Shop::getName).list());
     }
+
+    @Override
+    public Result<Page<Shop>> pageListDineIn(Integer page, Integer size, String shopId, Integer isDineIn) {
+        LambdaQueryChainWrapper<Shop> select = lambdaQuery().select(
+                Shop::getShopId,
+                Shop::getShopOrder,
+                Shop::getIsDineIn,
+                Shop::getOpeningHoursStart,
+                Shop::getOpeningHoursEnd,
+                Shop::getName
+        );
+        if(shopId != null&&!shopId.isEmpty()){
+            select.eq(Shop::getShopId, shopId);
+        }
+        if(isDineIn != null){
+            select.eq(Shop::getIsDineIn, isDineIn);
+        }
+        return Result.success(select.page(new Page<>(page, size)));
+    }
+
+    @Override
+    public Result<Page<Shop>> pageListTakeOut(Integer page, Integer size, String shopId, Integer isTakeOut) {
+        LambdaQueryChainWrapper<Shop> select = lambdaQuery().select(
+                Shop::getShopId,
+                Shop::getShopOrder,
+                Shop::getIsTakeOut,
+                Shop::getOpeningHoursStart,
+                Shop::getOpeningHoursEnd,
+                Shop::getName
+        );
+        if(shopId != null&&!shopId.isEmpty()){
+            select.eq(Shop::getShopId, shopId);
+        }
+        if(isTakeOut != null){
+            select.eq(Shop::getIsDineIn, isTakeOut);
+        }
+        return Result.success(select.page(new Page<>(page, size)));
+    }
+
+    @Override
+    public Result<List<Shop>> pageListByRange(Integer page, Integer size, Integer isDineIn, Integer isTakeOut) {
+        return Result.success(list());
+    }
 }

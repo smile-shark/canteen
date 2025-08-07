@@ -24,4 +24,6 @@ public interface CuisineService extends IService<Cuisine> {
     Result<?> updateCuisine(Cuisine cuisine);
 
     Result<Cuisine> getInfoById(String id);
+
+    Result<Page<Cuisine>> inventoryPageList(Integer page, Integer size, String name, String cuisineTypeId, String shopId);
 }

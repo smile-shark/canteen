@@ -25,10 +25,13 @@ import org.springframework.stereotype.Service;
 public class RawMaterialServiceImp extends ServiceImpl<RawMaterialMapper, RawMaterial> implements RawMaterialService {
 
     @Override
-    public Result<Page<RawMaterial>> pageList(Integer page, Integer size, String name, String rawMaterialTypeId) {
+    public Result<Page<RawMaterial>> pageList(Integer page, Integer size, String name, String rawMaterialTypeId, String shopId) {
         LambdaQueryChainWrapper<RawMaterial> query = lambdaQuery().like(RawMaterial::getName, StrUtil.globbing(name));
         if(rawMaterialTypeId!=null && !rawMaterialTypeId.isEmpty()){
             query.eq(RawMaterial::getRawMaterialTypeId, rawMaterialTypeId);
+        }
+        if(shopId!=null && !shopId.isEmpty()){
+            query.eq(RawMaterial::getShopId, shopId);
         }
         return Result.success(query.page(new Page<>(page, size)));
     }

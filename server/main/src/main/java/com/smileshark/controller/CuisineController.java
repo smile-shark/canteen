@@ -25,6 +25,10 @@ public class CuisineController {
     public Result<Page<Cuisine>> pageList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String cuisineName, @RequestParam(required = false) String cuisineType, @RequestParam(required = false) Integer state) {
         return cuisineService.pageList(page, size, cuisineName, cuisineType, state);
     }
+    @GetMapping("/inventoryPageList")
+    public Result<Page<Cuisine>> inventoryPageList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) String name, @RequestParam(required = false) String cuisineTypeId, @RequestParam(required = false) String shopId){
+        return cuisineService.inventoryPageList(page, size, name, cuisineTypeId, shopId);
+    }
     @GetMapping("/infoById")
     public Result<Cuisine> infoById(@RequestParam String id){
         return cuisineService.getInfoById(id);

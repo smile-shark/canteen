@@ -25,9 +25,10 @@ public class RawMaterialController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String rawMaterialTypeId
+            @RequestParam(required = false) String rawMaterialTypeId,
+            @RequestParam(required = false) String shopId
     ){
-        return rawMaterialService.pageList(page, size, name, rawMaterialTypeId);
+        return rawMaterialService.pageList(page, size, name, rawMaterialTypeId,shopId);
     }
     @PostMapping("/add")
     public Result<?> add(@RequestBody RawMaterial rawMaterial){

@@ -2,6 +2,7 @@ package com.smileshark.service.imp;
 
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.code.ResultCode;
 import com.smileshark.common.Result;
@@ -69,13 +70,15 @@ private final CuisineImageMapper cuisineImageMapper;
     @Override
     @Transactional
     public Result<?> updateCuisine(Cuisine cuisine) {
-        // 删除菜品图片
-        cuisineImageMapper.delete(new LambdaQueryWrapper<>(CuisineImage.class).eq(CuisineImage::getCuisineId, cuisine.getCuisineId()));
-        // 添加新的图片
-        for (CuisineImage cuisineImage : cuisine.getCuisineImages()) {
-            cuisineImage.setCuisineId(cuisine.getCuisineId());
-            if (cuisineImageMapper.insert(cuisineImage)<=0) {
-                throw new BusinessException(ResultCode.UPDATE_ERROR);
+        if(cuisine.getCuisineImages()!=null && !cuisine.getCuisineImages().isEmpty()){
+            // 删除菜品图片
+            cuisineImageMapper.delete(new LambdaQueryWrapper<>(CuisineImage.class).eq(CuisineImage::getCuisineId, cuisine.getCuisineId()));
+            // 添加新的图片
+            for (CuisineImage cuisineImage : cuisine.getCuisineImages()) {
+                cuisineImage.setCuisineId(cuisine.getCuisineId());
+                if (cuisineImageMapper.insert(cuisineImage)<=0) {
+                    throw new BusinessException(ResultCode.UPDATE_ERROR);
+                }
             }
         }
         // 修改菜品
@@ -90,5 +93,30 @@ private final CuisineImageMapper cuisineImageMapper;
         Cuisine cuisine = lambdaQuery().eq(Cuisine::getCuisineId, id).one();
         cuisine.setCuisineImages(cuisineImageMapper.selectList(new LambdaQueryWrapper<>(CuisineImage.class).eq(CuisineImage::getCuisineId, id).last("order by image_order asc")));
         return Result.success(cuisine);
+    }
+
+    @Override
+    public Result<Page<Cuisine>> inventoryPageList(Integer page, Integer size, String name, String cuisineTypeId, String shopId) {
+        LambdaQueryChainWrapper<Cuisine> query = lambdaQuery().select(
+                Cuisine::getCuisineId,
+                Cuisine::getNum,
+                Cuisine::getName,
+                Cuisine::getCuisineTypeId,
+                Cuisine::getPrice,
+                Cuisine::getIsSpecialOffer,
+                Cuisine::getSpecialOffer,
+                Cuisine::getShopId,
+                Cuisine::getInventory,
+                Cuisine::getWarningMin,
+                Cuisine::getWarningMax,
+                Cuisine::getState
+        ).like(Cuisine::getName, StrUtil.globbing(name));
+        if (cuisineTypeId!= null && !cuisineTypeId.isEmpty()) {
+            query.eq(Cuisine::getCuisineTypeId, cuisineTypeId);
+        }
+        if (shopId!= null && !shopId.isEmpty()) {
+            query.eq(Cuisine::getShopId, shopId);
+        }
+        return Result.success(query.page(new Page<>(page, size)));
     }
 }
