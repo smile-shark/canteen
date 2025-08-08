@@ -1,12 +1,15 @@
 package com.smileshark.service.imp;
 
 import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.code.ResultCode;
 import com.smileshark.common.Result;
+import com.smileshark.entity.Delivery;
 import com.smileshark.entity.Shop;
 import com.smileshark.exception.BusinessException;
+import com.smileshark.mapper.DeliveryMapper;
 import com.smileshark.mapper.ShopMapper;
 import com.smileshark.service.ShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,7 +30,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements ShopService {
-
+    private final ShopMapper shopMapper;
+    private final DeliveryMapper deliveryMapper;
     @Override
     public Result<?> addShop(Shop shop) {
         shop.setShopId(IdUtil.simpleUUID());
@@ -95,6 +99,17 @@ public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements Sho
 
     @Override
     public Result<List<Shop>> pageListByRange(Integer page, Integer size, Integer isDineIn, Integer isTakeOut) {
-        return Result.success(list());
+        List<Shop> shops = list();
+        for (Shop shop : shops) {
+            shop.setDelivery(deliveryMapper.selectOne(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, shop.getShopId())));
+        }
+        return Result.success(shops);
+    }
+
+    @Override
+    public Result<Shop> infoById(String id) {
+        Shop shop = lambdaQuery().eq(Shop::getShopId, id).one();
+        shop.setDelivery(deliveryMapper.selectOne(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, id)));
+        return Result.success(shop);
     }
 }

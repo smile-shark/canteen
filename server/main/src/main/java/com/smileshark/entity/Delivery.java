@@ -1,6 +1,8 @@
 package com.smileshark.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalTime;
 import lombok.Getter;
@@ -24,6 +26,7 @@ public class Delivery {
     /**
      * 对应的门店
      */
+    @TableId(value = "shop_id", type = IdType.INPUT)
     @TableField("shop_id")
     private String shopId;
 

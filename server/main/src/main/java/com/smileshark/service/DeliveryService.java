@@ -1,5 +1,6 @@
 package com.smileshark.service;
 
+import com.smileshark.common.Result;
 import com.smileshark.entity.Delivery;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DeliveryService extends IService<Delivery> {
 
+
+    Result<?> saveOrUpdateDelivery(Delivery delivery);
+
+    Result<Delivery> infoById(String id);
 }

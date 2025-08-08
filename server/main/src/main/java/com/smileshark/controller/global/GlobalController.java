@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GlobalController {
     private final EmailService emailService;
 
-    @RequestMapping("/send/email")
+    @RequestMapping("/sendEmail")
     public Result<?> sendEmail(@RequestParam String email) {
         return emailService.sendEmail(email);
     }

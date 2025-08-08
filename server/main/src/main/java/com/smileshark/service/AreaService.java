@@ -18,4 +18,5 @@ public interface AreaService extends IService<Area> {
 
     Result<List<Area>> listById(String id);
 
+    Result<Area> infoByProvinceId(String AreaId);
 }

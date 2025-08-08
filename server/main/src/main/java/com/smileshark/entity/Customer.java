@@ -34,7 +34,7 @@ public class Customer {
      * 积分
      */
     @TableField("integral")
-    private Long integral;
+    private Integer integral;
 
     /**
      * 客户对用的钱包

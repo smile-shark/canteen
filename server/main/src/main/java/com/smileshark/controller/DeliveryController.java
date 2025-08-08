@@ -1,7 +1,10 @@
 package com.smileshark.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.smileshark.common.Result;
+import com.smileshark.entity.Delivery;
+import com.smileshark.service.DeliveryService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -13,6 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/delivery")
+@RequiredArgsConstructor
 public class DeliveryController {
-
+    private final DeliveryService deliveryService;
+    @GetMapping("/infoById")
+    public Result<Delivery> infoById(String id) {
+        return deliveryService.infoById(id);
+    }
+    @PostMapping("/saveOrUpdate")
+    public Result<?> saveOrUpdate(@RequestBody Delivery delivery) {
+        return deliveryService.saveOrUpdateDelivery(delivery);
+    }
 }

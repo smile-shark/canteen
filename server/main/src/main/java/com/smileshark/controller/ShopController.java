@@ -56,4 +56,8 @@ private final ShopService shopService;
     public Result<List<Shop>> pageListByRange(@RequestParam(defaultValue = "1") Integer page,@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) Integer isDineIn,@RequestParam(required = false)Integer isTakeOut ){
         return shopService.pageListByRange(page, size, isDineIn, isTakeOut);
     }
+    @GetMapping("/infoById")
+    public Result<Shop> infoById(@RequestParam String id){
+        return shopService.infoById(id);
+    }
 }

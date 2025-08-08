@@ -1,8 +1,12 @@
 package com.smileshark.controller;
 
+import com.smileshark.common.Result;
+import com.smileshark.entity.DiningTableType;
+import com.smileshark.service.DiningTableTypeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/diningTableType")
 @RequiredArgsConstructor
 public class DiningTableTypeController {
+    private final DiningTableTypeService diningTableTypeService;
 
+    @GetMapping("/list")
+    public Result<List<DiningTableType>> list() {
+        return diningTableTypeService.diningTableTypeList();
+    }
+    @PostMapping("/add")
+    public Result<?> add(@RequestBody DiningTableType diningTableType){
+        return diningTableTypeService.add(diningTableType);
+    }
+    @PutMapping("/update")
+    public Result<?> update(@RequestBody DiningTableType diningTableType){{
+        return diningTableTypeService.updateDiningTableType(diningTableType);}
+    }
+    @DeleteMapping("/delete")
+    public Result<?> delete(@RequestParam String id){
+        return diningTableTypeService.delete(id);
+    }
 }

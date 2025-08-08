@@ -92,4 +92,7 @@ public class Shop {
      */
     @TableField("opening_hours_end")
     private LocalTime openingHoursEnd;
+
+    @TableField(exist = false)
+    private Delivery delivery;
 }

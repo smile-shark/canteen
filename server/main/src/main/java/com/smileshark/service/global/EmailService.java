@@ -27,29 +27,35 @@ public class EmailService {
     private final StringRedisTemplate stringRedisTemplate;
     private final JavaMailSender javaMailSender;
     public Result<?> sendEmail(String email) {
-// 5分钟校验
-        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(key5min + email))
-                && Integer.parseInt(Objects.requireNonNull(stringRedisTemplate.opsForValue().get(key5min + email))) >= 2) {
-            return Result.error("5分钟内只能发送2次验证码");
+        // 校验邮箱格式
+        if (!email.matches("^\\w+@\\w+\\.\\w+$")) {
+            throw new BusinessException(ResultCode.EMAIL_FORMAT_ERROR);
         }
-        // 24小时校验
-        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(keyDay + email))
-                && Integer.parseInt(Objects.requireNonNull(stringRedisTemplate.opsForValue().get(keyDay + email))) >= 5) {
-            return Result.error("24小时内只能发送5次验证码");
-        }
+
+
+//        // 5分钟校验
+//        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(key5min + email))
+//                && Integer.parseInt(Objects.requireNonNull(stringRedisTemplate.opsForValue().get(key5min + email))) >= 2) {
+//            return Result.error("5分钟内只能发送2次验证码");
+//        }
+//        // 24小时校验
+//        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(keyDay + email))
+//                && Integer.parseInt(Objects.requireNonNull(stringRedisTemplate.opsForValue().get(keyDay + email))) >= 5) {
+//            return Result.error("24小时内只能发送5次验证码");
+//        }
         // 生成4位验证码
         String code = RandomUtil.randomNumbers(4);
         // 使用邮箱发送验证码
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(sender);
-        message.setTo(email);
-        message.setSubject("验证码");
-        message.setText("您的验证码为：" + code);
-        try {
-            javaMailSender.send(message);
-        } catch (MailException e) {
-            throw new BusinessException(ResultCode.EMAIL_SEND_ERROR);
-        }
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setFrom(sender);
+//        message.setTo(email);
+//        message.setSubject("验证码");
+//        message.setText("您的验证码为：" + code);
+//        try {
+//            javaMailSender.send(message);
+//        } catch (MailException e) {
+//            throw new BusinessException(ResultCode.EMAIL_SEND_ERROR);
+//        }
 
         // 在redis中存储5分钟
         stringRedisTemplate.opsForValue()

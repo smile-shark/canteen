@@ -26,4 +26,9 @@ public class AreaServiceImp extends ServiceImpl<AreaMapper, Area> implements Are
     public Result<List<Area>> listById(String id) {
         return Result.success(lambdaQuery().eq(Area::getProvinceId,id).list());
     }
+
+    @Override
+    public Result<Area> infoByProvinceId(String AreaId) {
+        return Result.success(lambdaQuery().eq(Area::getAreaId,AreaId).one());
+    }
 }

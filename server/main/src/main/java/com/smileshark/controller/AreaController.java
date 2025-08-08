@@ -27,4 +27,8 @@ private final AreaService areaService;
     public Result<List<Area>> listById(String id){
         return areaService.listById(id);
     }
+    @GetMapping("/infoByAreaId")
+    public Result<Area> infoByAreaId(String AreaId){
+        return areaService.infoByProvinceId(AreaId);
+    }
 }

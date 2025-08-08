@@ -1,16 +1,22 @@
 package com.smileshark.service.imp;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.IdUtil;
 import com.smileshark.code.ResultCode;
 import com.smileshark.common.Result;
 import com.smileshark.entity.Customer;
+import com.smileshark.entity.Wallet;
 import com.smileshark.exception.BusinessException;
 import com.smileshark.mapper.CustomerMapper;
+import com.smileshark.mapper.WalletMapper;
 import com.smileshark.service.CustomerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.smileshark.service.WalletService;
+import com.smileshark.service.global.EmailService;
 import com.smileshark.utils.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +35,9 @@ public class CustomerServiceImp extends ServiceImpl<CustomerMapper, Customer> im
 
     private final CustomerMapper customerMapper;
     private final TokenUtil tokenUtil;
+    private final EmailService emailService;
+    private final WalletService walletService;
+    private final WalletMapper walletMapper;
 
     @Override
     public Result<Map<String, Object>> loginForPassword(String account, String password) {
@@ -55,5 +64,49 @@ public class CustomerServiceImp extends ServiceImpl<CustomerMapper, Customer> im
         result.put("token", tokenUtil.createToken(customer));
 
         return Result.success("登录成功", result);
+    }
+
+    @Override
+    public Result<Map<String, Object>> loginForVerifyCode(String account, String verifyCode) {
+        if(!emailService.verifyCode(account,verifyCode)){
+            throw new BusinessException(ResultCode.VERIFY_CODE_ERROR);
+        }
+        // 查询是否有该账户
+        Customer customer = lambdaQuery().eq(Customer::getAccount, account).one();
+        if (customer == null) {
+            throw new BusinessException(ResultCode.NOT_HAVE_ACCOUNT);
+        }
+
+        customer.setPassword(null);
+        Map<String, Object> result = BeanUtil.beanToMap(customer);
+        result.put("token", tokenUtil.createToken(customer));
+
+        return Result.success("登录成功", result);
+    }
+
+    @Override
+    @Transactional
+    public Result<Map<String, Object>> register(Customer customer, String verifyCode) {
+        if(!emailService.verifyCode(customer.getAccount(),verifyCode)){
+            throw new BusinessException(ResultCode.VERIFY_CODE_ERROR);
+        }
+
+        // 为用户添加钱包
+        String walletId = IdUtil.simpleUUID();
+        walletMapper.insert(new Wallet(walletId,0d,null));
+
+        // 注册账户
+        customer.setCustomerId(IdUtil.simpleUUID());
+        customer.setWalletId(walletId);
+        customer.setIntegral(0);
+        customer.setLevel(0);
+        customer.setSex(0);
+        customerMapper.insert(customer);
+
+        customer.setPassword(null);
+        Map<String, Object> result = BeanUtil.beanToMap(customer);
+        result.put("token", tokenUtil.createToken(customer));
+
+        return Result.success("注册成功", result);
     }
 }

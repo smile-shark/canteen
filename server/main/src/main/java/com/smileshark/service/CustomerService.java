@@ -17,4 +17,8 @@ import java.util.Map;
 public interface CustomerService extends IService<Customer> {
 
     Result<Map<String, Object>> loginForPassword(String account, String password);
+
+    Result<Map<String, Object>> loginForVerifyCode(String account, String verifyCode);
+
+    Result<Map<String, Object>> register(Customer customer, String verifyCode);
 }
