@@ -38,7 +38,7 @@ private final ShopService shopService;
     }
     @DeleteMapping("/delete")
     public Result<?> delete(@RequestParam String id){
-        return shopService.removeById(id) ? Result.success(ResultCode.DELETE_SUCCESS) : Result.error(ResultCode.DELETE_ERROR);
+        return shopService.delete(id);
     }
     @GetMapping("/simpleList")
     public Result<List<Shop>> simpleList(){

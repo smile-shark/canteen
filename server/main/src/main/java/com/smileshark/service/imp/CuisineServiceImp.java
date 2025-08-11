@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜品详情 服务实现类
@@ -29,11 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CuisineServiceImp extends ServiceImpl<CuisineMapper, Cuisine> implements CuisineService {
-private final CuisineMapper cuisineMapper;
-private final CuisineImageMapper cuisineImageMapper;
+    private final CuisineMapper cuisineMapper;
+    private final CuisineImageMapper cuisineImageMapper;
+
     @Override
     public Result<Page<Cuisine>> pageList(Integer page, Integer size, String cuisineName, String cuisineType, Integer state) {
-        return Result.success(cuisineMapper.pageList(new Page<>(page,size), StrUtil.globbing(cuisineName), cuisineType, state));
+        return Result.success(cuisineMapper.pageList(new Page<>(page, size), StrUtil.globbing(cuisineName), cuisineType, state));
     }
 
     @Override
@@ -48,7 +51,7 @@ private final CuisineImageMapper cuisineImageMapper;
         // 添加菜品图片
         for (CuisineImage cuisineImage : cuisine.getCuisineImages()) {
             cuisineImage.setCuisineId(cuisineId);
-            if (cuisineImageMapper.insert(cuisineImage)<=0) {
+            if (cuisineImageMapper.insert(cuisineImage) <= 0) {
                 throw new BusinessException(ResultCode.ADD_ERROR);
             }
         }
@@ -70,13 +73,13 @@ private final CuisineImageMapper cuisineImageMapper;
     @Override
     @Transactional
     public Result<?> updateCuisine(Cuisine cuisine) {
-        if(cuisine.getCuisineImages()!=null && !cuisine.getCuisineImages().isEmpty()){
+        if (cuisine.getCuisineImages() != null && !cuisine.getCuisineImages().isEmpty()) {
             // 删除菜品图片
             cuisineImageMapper.delete(new LambdaQueryWrapper<>(CuisineImage.class).eq(CuisineImage::getCuisineId, cuisine.getCuisineId()));
             // 添加新的图片
             for (CuisineImage cuisineImage : cuisine.getCuisineImages()) {
                 cuisineImage.setCuisineId(cuisine.getCuisineId());
-                if (cuisineImageMapper.insert(cuisineImage)<=0) {
+                if (cuisineImageMapper.insert(cuisineImage) <= 0) {
                     throw new BusinessException(ResultCode.UPDATE_ERROR);
                 }
             }
@@ -111,12 +114,18 @@ private final CuisineImageMapper cuisineImageMapper;
                 Cuisine::getWarningMax,
                 Cuisine::getState
         ).like(Cuisine::getName, StrUtil.globbing(name));
-        if (cuisineTypeId!= null && !cuisineTypeId.isEmpty()) {
+        if (cuisineTypeId != null && !cuisineTypeId.isEmpty()) {
             query.eq(Cuisine::getCuisineTypeId, cuisineTypeId);
         }
-        if (shopId!= null && !shopId.isEmpty()) {
+        if (shopId != null && !shopId.isEmpty()) {
             query.eq(Cuisine::getShopId, shopId);
         }
         return Result.success(query.page(new Page<>(page, size)));
+    }
+
+    @Override
+    public Result<List<Cuisine>> cuisineServiceList(String name, Integer serviceType, String cuisineTypeId, String shopId) {
+        List<Cuisine> cuisines = cuisineMapper.cuisineServiceList(StrUtil.globbing(name),serviceType,cuisineTypeId,shopId);
+        return Result.success(cuisines);
     }
 }

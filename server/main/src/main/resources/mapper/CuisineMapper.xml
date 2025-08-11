@@ -61,5 +61,44 @@
         group by cuisine.cuisine_id
         order by cuisine.num
     </select>
+    <resultMap id="cuisineServiceListMap" type="com.smileshark.entity.Cuisine">
+        <id column="cuisine_id" property="cuisineId" />
+        <result column="price" property="price" />
+        <result column="name" property="name" />
+        <result column="is_special_offer" property="isSpecialOffer" />
+        <result column="special_offer" property="specialOffer" />
+        <result column="url" property="image" />
+        <result column="monthly_sales" property="monthlySales"/>
+    </resultMap>
+
+    <select id="cuisineServiceList" resultMap="cuisineServiceListMap">
+        select cuisine.cuisine_id,price,is_special_offer,special_offer,min(cuisine_image.url) as url,
+        ifnull(sum(case when daily_sales_volume.sales_date >= date_sub(curdate(),interval 1 month)
+        then daily_sales_volume.num else 0 end),0) as monthly_sales,cuisine.name,cuisine.inventory
+        from cuisine
+        join cuisine_image on cuisine.cuisine_id = cuisine_image.cuisine_id
+        left join daily_sales_volume on cuisine.cuisine_id = daily_sales_volume.cuisine_id
+        <where>
+            cuisine.state = 0
+            <if test="shopId!=null and shopId!=''">
+                and cuisine.shop_id = #{shopId}
+            </if>
+            <if test="name!=null and name!=''">
+                and cuisine.name like #{name}
+            </if>
+            <if test="serviceType!=null">
+                <if test="serviceType==0">
+                    and dine_in_show = 0
+                </if>
+                <if test="serviceType==1 or serviceType==2">
+                    and take_out_show = 0
+                </if>
+            </if>
+            <if test="cuisineTypeId!=null and cuisineTypeId!=''">
+                and cuisine.cuisine_type_id = #{cuisineTypeId}
+            </if>
+        </where>
+        group by cuisine.cuisine_id
+    </select>
 
 </mapper>

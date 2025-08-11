@@ -1,7 +1,10 @@
 package com.smileshark.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.smileshark.common.Result;
+import com.smileshark.entity.CustomerOrder;
+import com.smileshark.service.CustomerOrderService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -13,6 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/customerOrder")
+@RequiredArgsConstructor
 public class CustomerOrderController {
-
+    private final CustomerOrderService customerOrderService;
+    // 外卖和自提点餐
+    @PostMapping("/takeOutAndDineInOrder")
+    public Result<CustomerOrder> takeOutAndDineInOrder(@RequestParam(required = false) String cuisineId,@RequestParam Integer orderType,@RequestParam(required = false) Boolean isAdd){
+       return customerOrderService.takeOutAndDineInOrder( cuisineId, orderType,isAdd);
+    }
 }

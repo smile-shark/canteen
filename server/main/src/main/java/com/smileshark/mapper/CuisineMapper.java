@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.entity.Cuisine;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +20,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CuisineMapper extends BaseMapper<Cuisine> {
 
     Page<Cuisine> pageList(Page<Cuisine> objectPage, String name, String cuisineType, Integer state);
+
+    List<Cuisine> cuisineServiceList(@Param("name") String name, @Param("serviceType") Integer serviceType, @Param("cuisineTypeId") String cuisineTypeId, @Param("shopId") String shopId);
 }

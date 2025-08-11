@@ -26,4 +26,6 @@ public interface DiningTableService extends IService<DiningTable> {
     Result<?> delete(String id);
 
     Result<List<DiningTable>> listByShopId(String shopId);
+
+    Result<DiningTable> infoById(String id);
 }

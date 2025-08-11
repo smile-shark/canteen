@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -124,4 +126,7 @@ public class CustomerOrder {
      */
     @TableField("delete")
     private Integer delete;
+
+    @TableField(exist = false)
+    private List<CustomerOrderCuisine> customerOrderCuisines;
 }

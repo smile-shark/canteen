@@ -163,4 +163,6 @@ public class Cuisine {
     private String image;
     @TableField(exist = false)
     private List<CuisineImage> cuisineImages;
+    @TableField(exist = false)
+    private Integer monthlySales;
 }

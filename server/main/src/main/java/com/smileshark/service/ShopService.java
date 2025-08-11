@@ -30,4 +30,6 @@ public interface ShopService extends IService<Shop> {
     Result<List<Shop>> pageListByRange(Integer page, Integer size, Integer isDineIn, Integer isTakeOut);
 
     Result<Shop> infoById(String id);
+
+    Result<?> delete(String id);
 }

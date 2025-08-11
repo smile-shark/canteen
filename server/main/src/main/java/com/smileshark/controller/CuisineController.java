@@ -7,6 +7,8 @@ import com.smileshark.service.CuisineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜品详情 前端控制器
@@ -45,4 +47,10 @@ public class CuisineController {
     public Result<?> delete(@RequestParam String id) {
         return cuisineService.deleteCuisine(id);
     }
+    // 用户点餐时调用的菜品列表
+    @GetMapping("/cuisineServiceList")
+    public Result<List<Cuisine>> cuisineServiceList(@RequestParam String name, @RequestParam Integer serviceType, @RequestParam String cuisineTypeId,@RequestParam String shopId){
+        return cuisineService.cuisineServiceList(name, serviceType, cuisineTypeId,shopId);
+    }
+
 }

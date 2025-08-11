@@ -31,6 +31,10 @@ public class DiningTableController {
     public Result<List<DiningTable>> list(String shopId){
         return diningTableService.listByShopId(shopId);
     }
+    @GetMapping("/infoById")
+    public Result<DiningTable> infoById(@RequestParam String id){
+        return diningTableService.infoById(id);
+    }
     @PostMapping("/add")
     public Result<?> add(@RequestBody DiningTable diningTable){
         return diningTableService.add(diningTable);

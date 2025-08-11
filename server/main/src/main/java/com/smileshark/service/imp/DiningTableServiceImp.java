@@ -67,4 +67,16 @@ public class DiningTableServiceImp extends ServiceImpl<DiningTableMapper, Dining
     public Result<List<DiningTable>> listByShopId(String shopId) {
         return Result.success(lambdaQuery().eq(DiningTable::getShopId, shopId).list());
     }
+
+    @Override
+    public Result<DiningTable> infoById(String id) {
+        return Result.success(lambdaQuery().select(
+                DiningTable::getDiningTableId,
+                DiningTable::getSerialNumber,
+                DiningTable::getDiningTableTypeId,
+                DiningTable::getUserState,
+                DiningTable::getShopId,
+                DiningTable::getState
+        ).eq(DiningTable::getDiningTableId, id).one());
+    }
 }

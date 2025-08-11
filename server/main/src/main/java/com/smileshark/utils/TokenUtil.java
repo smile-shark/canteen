@@ -8,7 +8,9 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import cn.hutool.jwt.JWTValidator;
+import com.smileshark.code.ResultCode;
 import com.smileshark.entity.Customer;
+import com.smileshark.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -40,13 +42,13 @@ public class TokenUtil {
         return shortToken;
     }
 
-    public <T> boolean parseToken(String token, Class<T> clazz) {
+    public <T> T parseToken(String token, Class<T> clazz) {
         if (token == null) {
-            return false;
+            return null;
         }
         // 验证令牌有效性
         if (!JWTUtil.verify(token, key.getBytes())) {
-            return false;
+            return null;
         }
         JWT jwt = JWTUtil.parseToken(token);
         // 验证令牌过期时间
@@ -58,13 +60,13 @@ public class TokenUtil {
             String longToken = stringRedisTemplate.opsForValue()
                     .get(token);
             if (longToken == null) {
-                return false;
+                return null;
             }
             // 如果长时间令牌没有失效才创建新的短时间令牌
             try {
                 JWTValidator.of(longToken).validateDate();
             } catch (ValidateException e) {
-                return false;
+                return null;
             }
             String newShortToken = jwt.setExpiresAt(DateUtil.offsetMinute(expDate, tokenShortTime_m)).sign();
             stringRedisTemplate.opsForValue()
@@ -73,8 +75,8 @@ public class TokenUtil {
             // 删除旧的令牌数据
             stringRedisTemplate.delete(token);
         }
-        InfoThreadLocal.setCustomer((Customer) JSONUtil.toBean((String) jwt.getPayload("info"), clazz));
-        return true;
+//        InfoThreadLocal.setCustomer((Customer) JSONUtil.toBean((String) jwt.getPayload("info"), clazz));
+        return JSONUtil.toBean((String) jwt.getPayload("info"), clazz);
     }
 
     private String createTimeLimitedToken(String info, Integer time) {

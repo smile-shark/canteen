@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smileshark.utils.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -111,5 +112,17 @@ public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements Sho
         Shop shop = lambdaQuery().eq(Shop::getShopId, id).one();
         shop.setDelivery(deliveryMapper.selectOne(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, id)));
         return Result.success(shop);
+    }
+
+    @Override
+    @Transactional
+    public Result<?> delete(String id) {
+        // 1. 删除对应的配送信息
+        deliveryMapper.delete(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, id));
+        // 2. 删除门店数据
+        if (!removeById(id)) {
+            throw new BusinessException(ResultCode.DELETE_ERROR);
+        }
+        return Result.success(ResultCode.DELETE_SUCCESS);
     }
 }
