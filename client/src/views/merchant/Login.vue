@@ -3,8 +3,9 @@
     <div class="login-box">
       <h2>智慧餐厅</h2>
       <van-cell-group>
-        <van-field v-model="account" label="" placeholder="请输入用户名" left-icon="contact" />
-        <van-field v-model="password" type="password" label="" placeholder="请输入密码" left-icon="lock" />
+        <van-field v-model="account" label="" placeholder="请输入用户名" left-icon="contact" @keydown.enter="handleLogin"/>
+        <van-field v-model="password" :type="showPassword?'':'password'" label="" placeholder="请输入密码" left-icon="lock"  @keydown.enter="handleLogin"/>
+        <i class="el-icon-view" @click="showPassword=!showPassword"></i>
       </van-cell-group>
       <van-button type="primary" block @click="handleLogin">登录</van-button>
     </div>
@@ -17,7 +18,8 @@ export default {
   data() {
     return {
       account: '',
-      password: ''
+      password: '',
+      showPassword:false
     };
   },
   methods: {

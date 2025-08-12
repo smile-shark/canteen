@@ -1,5 +1,7 @@
 package com.smileshark.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.smileshark.common.Result;
 import com.smileshark.entity.DiscountCoupon;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DiscountCouponService extends IService<DiscountCoupon> {
 
+    Result<Page<DiscountCoupon>> pageList(Integer page, Integer size, Integer type, String shopId);
 }

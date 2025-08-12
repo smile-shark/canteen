@@ -7,12 +7,14 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@stomp/stompjs": "^7.1.1",
     "axios": "^1.11.0",
     "core-js": "^3.8.3",
     "echarts": "^6.0.0",
     "element-ui": "^2.15.14",
     "html5-qrcode": "^2.3.8",
     "qrcode": "^1.5.4",
+    "sockjs-client": "^1.6.1",
     "vant": "^2.12.51",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1"

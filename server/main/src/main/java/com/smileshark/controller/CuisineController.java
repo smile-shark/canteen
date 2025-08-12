@@ -52,5 +52,10 @@ public class CuisineController {
     public Result<List<Cuisine>> cuisineServiceList(@RequestParam String name, @RequestParam Integer serviceType, @RequestParam String cuisineTypeId,@RequestParam String shopId){
         return cuisineService.cuisineServiceList(name, serviceType, cuisineTypeId,shopId);
     }
+    // 根据id获取详细的信息
+    @GetMapping("/getSimpleCuisineById")
+    public Result<Cuisine> getSimpleCuisineById(@RequestParam String id){
+        return cuisineService.getCuisineById(id);
+    }
 
 }

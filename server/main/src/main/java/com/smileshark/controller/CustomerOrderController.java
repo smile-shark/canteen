@@ -22,6 +22,16 @@ public class CustomerOrderController {
     // 外卖和自提点餐
     @PostMapping("/takeOutAndDineInOrder")
     public Result<CustomerOrder> takeOutAndDineInOrder(@RequestParam(required = false) String cuisineId,@RequestParam Integer orderType,@RequestParam(required = false) Boolean isAdd){
-       return customerOrderService.takeOutAndDineInOrder( cuisineId, orderType,isAdd);
+        return customerOrderService.takeOutAndDineInOrder( cuisineId, orderType,isAdd);
+    }
+    // 外卖和自提点餐
+    @PostMapping("/dineInOrder")
+    public Result<CustomerOrder> takeOutAndDineInOrder(@RequestParam(required = false) String cuisineId,@RequestParam Integer orderType,@RequestParam(required = false) Boolean isAdd, @RequestParam String diningTableId){
+        return customerOrderService.takeOutAndDineInOrder( cuisineId, orderType,isAdd,diningTableId);
+    }
+    // 用户下单，返回订单的id
+    @PostMapping("/placeOrderNow")
+    public Result<String> placeOrderNow(@RequestBody CustomerOrder customerOrder){
+        return customerOrderService.placeOrderNow(customerOrder);
     }
 }

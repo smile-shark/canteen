@@ -128,4 +128,9 @@ public class CuisineServiceImp extends ServiceImpl<CuisineMapper, Cuisine> imple
         List<Cuisine> cuisines = cuisineMapper.cuisineServiceList(StrUtil.globbing(name),serviceType,cuisineTypeId,shopId);
         return Result.success(cuisines);
     }
+
+    @Override
+    public Result<Cuisine> getCuisineById(String id) {
+        return Result.success(cuisineMapper.selectCuisineById(id));
+    }
 }

@@ -1,3 +1,4 @@
+import router from "@/router";
 import axios from "axios";
 import { Loading } from "element-ui";
 const myapi = axios.create({
@@ -11,16 +12,18 @@ myapi.interceptors.request.use(
     loadingInstance = Loading.service({ fullscreen: true });
     // 这里留着做token的一些提交
     // 1. 验证并添加customer的token
-    if(localStorage.customerInfo){
-      config.headers['CustomerToken']=JSON.parse(localStorage.customerInfo).token
+    if (localStorage.customerInfo) {
+      config.headers["CustomerToken"] = JSON.parse(
+        localStorage.customerInfo
+      ).token;
     }
     // 2. 验证并添加staff的token
-    if(localStorage.staffInfo){
-      config.headers['StaffToken']=JSON.parse(localStorage.staffInfo).token
+    if (localStorage.staffInfo) {
+      config.headers["StaffToken"] = JSON.parse(localStorage.staffInfo).token;
     }
     // 3. 验证并添加merchant的token
-    if(localStorage.merchantInfo){
-      config.headers['MerchantToken']=localStorage.merchantInfo
+    if (localStorage.merchantInfo) {
+      config.headers["MerchantToken"] = localStorage.merchantInfo;
     }
     return config;
   },
@@ -32,6 +35,10 @@ myapi.interceptors.request.use(
 myapi.interceptors.response.use((response) => {
   if (loadingInstance) {
     loadingInstance.close();
+  }
+  if (response.data.code == 401) {
+    // token失效，跳转登录页面
+    router.push("/customer/login");
   }
   return response;
 });
@@ -165,6 +172,8 @@ export default {
           shopId,
         },
       }),
+    getSimpleCuisineById: (id) =>
+      myapi.get("/cuisine/getSimpleCuisineById", { params: { id } }),
   },
   rawMaterial: {
     pageList: (page, size, name, rawMaterialTypeId, shopId) =>
@@ -216,9 +225,22 @@ export default {
   wallet: {
     infoById: (id) => myapi.get("/wallet/infoById", { params: { id } }),
   },
-  customerOrder:{
-    takeOutAndDineInOrder:(cuisineId,orderType,isAdd)=>myapi.post("/customerOrder/takeOutAndDineInOrder",null,{params:{cuisineId,orderType,isAdd}}),
-  }
+  customerOrder: {
+    takeOutAndDineInOrder: (cuisineId, orderType, isAdd) =>
+      myapi.post("/customerOrder/takeOutAndDineInOrder", null, {
+        params: { cuisineId, orderType, isAdd },
+      }),
+    dineInOrder: (cuisineId, orderType, isAdd, diningTableId) =>
+      myapi.post("/customerOrder/dineInOrder", null, {
+        params: { cuisineId, orderType, isAdd, diningTableId },
+      }),
+  },
+  discountCoupon: {
+    pageList: (page, size, type, shopId) =>
+      myapi.get("/discountCoupon/pageList", {
+        params: { page, size, type, shopId },
+      }),
+  },
 };
 
 // 转换为 LocalDate 可接受的格式

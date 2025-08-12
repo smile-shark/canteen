@@ -89,7 +89,7 @@
           <h3 class="dish-name">{{ dish.name }}</h3>
           <p class="month-sales">月售{{ dish.monthlySales }}</p>
           <p class="month-sales">剩余{{ dish.inventory }}</p>
-          <p class="price">¥{{ dish.price }}</p>
+          <p class="price">¥{{ dish.price }} <span v-if="dish.isSpecialOffer==1" style="color: #e56534;font-weight: bold;">￥{{ dish.specialOffer }}</span></p>
         </div>
         <div
           class="add-btn"
@@ -175,7 +175,7 @@
       <div v-if="customerOrder == null">
         <div style="text-align: center">暂无数据</div>
       </div>
-      <div v-else style="height: 100%;position: relative;">
+      <div v-else style="height: 100%; position: relative">
         <el-row
           v-for="(
             customerOrderCuisine, index
@@ -204,14 +204,21 @@
               ).toFixed(2)
             }}
           </el-col>
-          <el-col :span="7" style="display: flex; justify-content: center;justify-items: center;">
+          <el-col
+            :span="7"
+            style="
+              display: flex;
+              justify-content: center;
+              justify-items: center;
+            "
+          >
             <div
               class="add-btn"
               @click="orderChange(customerOrderCuisine.cuisineId, false)"
             >
               -
             </div>
-            <div style="padding:2px 20px">
+            <div style="padding: 2px 20px">
               {{ customerOrderCuisine.num }}
             </div>
             <div
@@ -222,15 +229,20 @@
             </div>
           </el-col>
         </el-row>
-        <el-row 
+        <el-row
           type="flex"
           justify="space-between"
-          style="padding: 10px 20px;position: absolute;width: 100%;bottom: 0;;"  >
+          style="padding: 10px 20px; position: absolute; width: 100%; bottom: 0"
+        >
           <el-col :span="12">
-            <strong style="color: #e56534;">￥{{ customerOrder.allPrice }}</strong>
+            <strong style="color: #e56534"
+              >￥{{ customerOrder.allPrice?customerOrder.allPrice:0 }}</strong
+            >
           </el-col>
           <el-col :span="6">
-            <el-button class="order-button" @click="placeOrderNow">立即下单</el-button>
+            <el-button class="order-button" @click="placeOrderNow"
+              >立即下单</el-button
+            >
           </el-col>
         </el-row>
       </div>
@@ -240,11 +252,14 @@
 
 <script>
 import api from "@/api";
+import { Stomp } from "@stomp/stompjs";
 
 export default {
   name: "Takeout",
   data() {
     return {
+      customerInfo: {},
+      stompClient: null,
       searchVal: "", // 搜索框绑定值，搜索功能后续可结合接口实现
       cuisineOptions: [],
       drawer: false,
@@ -308,16 +323,31 @@ export default {
     },
     // 处理添加和减少订单的菜品
     orderChange(cuisineId, isAdd) {
-      api.customerOrder
-        .takeOutAndDineInOrder(cuisineId, this.orderServiceType, isAdd)
-        .then((res) => {
-          if (res.data.code == 200) {
-            this.customerOrder = res.data.data;
-            console.log(this.customerOrder);
-          } else {
-            this.$message.error(res.data.msg);
-          }
-        });
+      if (this.orderServiceType == 0) {
+        // 这里使用socket进行点餐
+        this.stompClient.send(
+          "/app/order.service",
+          {
+            cuisineId: cuisineId || '',
+            isAdd: isAdd || false,
+            orderType: this.orderServiceType,
+            diningTableId: this.diningTableInfo.diningTableId,
+          },
+          JSON.stringify({
+            token: this.customerInfo.token,
+          })
+        );
+      } else {
+        api.customerOrder
+          .takeOutAndDineInOrder(cuisineId, this.orderServiceType, isAdd)
+          .then((res) => {
+            if (res.data.code == 200) {
+              this.customerOrder = res.data.data;
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          });
+      }
     },
     // 获取菜品的真实价格
     realyPrice(cuisine) {
@@ -328,11 +358,93 @@ export default {
         : cuisine.price;
     },
     // 处理下单
-    placeOrderNow(){
-      // 将订单的数据传递到后端，后端创建一个订单，存储在redis中，这样就可以设置一个限时，只有在完成支付后才会存入mysql中
+    placeOrderNow() {
+      // 这里将输出存储在路径中交给下一个页面同一进行创建订单
+      if(!this.customerOrder){
+        this.$message.error("没有订单数据")
+        return
+      }
+      if(!this.customerOrder.allPrice||this.customerOrder.allPrice<=0){
+        this.$message.error("请选择菜品")
+        return
+      }
+      this.customerOrder.type=this.orderServiceType
+      if(this.diningTableInfo){
+        this.customerOrder.diningTableId=this.diningTableInfo.diningTableId
+      }
+      // 后端不会清空购物车，在返回上一个页面的时候还可以继续加菜，转跳订单的页面可以查看一些可以使用的优惠券
+      // 但是需要上锁，在多人点餐时，有人进入了这个页面，那么其他人也无法加菜
+      this.$router.push({
+        name:'CustomerSubmitOrder',
+        query:this.customerOrder
+      })
       
+      
+    },
+    // socket连接
+    connect() {
+      // 创建WebSocket连接
+      const socket = new WebSocket("ws://localhost:8080/ws");
+      this.stompClient = Stomp.over(socket);
+      this.stompClient.debug = () => {}; // 禁用调试日志
 
-    }
+      // 连接的回调函数
+      this.stompClient.connect(
+        {},
+        (frame) => {
+          // 订阅私人的消息 -- 这里可以用来接收一些库存不足，身份验证失败的消息
+          this.stompClient.subscribe(
+            `/user/${this.customerInfo.customerId}/queue/order.add.customer.response`,
+            (message) => {
+              if (message.body) {
+                const data = JSON.parse(message.body);
+                // 判断消息的code
+                if (data.code == 401) {
+                  this.$message.error("登录过期");
+                  this.$router.push("/customer/login");
+                  this.closeSocket();
+                } else if (data.code != 200) {
+                  this.$message.error(data.msg);
+                }
+              }
+            }
+          );
+          // 订阅餐桌的消息 -- 接收对于customerOrder的变更
+          this.stompClient.subscribe(
+            `/topic/table/${this.diningTableInfo.diningTableId}`,
+            (message) => {
+              console.log(JSON.stringify(message.body));
+
+              if (message.body) {
+                let data = JSON.parse(message.body);
+                if (data.code == 200) {
+                  this.customerOrder = data.data;
+                } else {
+                  this.$message.error(data.msg);
+                }
+              }
+            }
+          );
+
+          // 加入
+          this.stompClient.send(
+            "/app/order.add.customer",
+            {},
+            JSON.stringify({
+              token: this.customerInfo.token,
+              diningTableId: this.diningTableInfo.diningTableId,
+            })
+          );
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    },
+    // socket关闭
+    closeSocket() {
+      this.stompClient.disconnect();
+    },
   },
   created() {
     if (localStorage.shopInfo) {
@@ -340,6 +452,12 @@ export default {
     } else {
       this.$message.error("请先选择门店");
       this.$router.push("/customer/shopList");
+    }
+    if (localStorage.customerInfo) {
+      this.customerInfo = JSON.parse(localStorage.customerInfo);
+    } else {
+      this.$message.error("请先登录");
+      this.$router.push("/customer/login");
     }
   },
   mounted() {
@@ -353,6 +471,12 @@ export default {
         } else {
           this.$router.push("/customer/scanqrcode");
         }
+        this.connect();
+        api.customerOrder.dineInOrder(null,this.orderServiceType,null,this.diningTableInfo.diningTableId).then(res=>{
+          if(res.data.code==200){
+            this.customerOrder=res.data.data
+          }
+        })
         break;
       default: // 外卖和自取
         // 获取门店的外卖和自取配置
@@ -361,6 +485,7 @@ export default {
             this.deliveryInfo = res.data.data;
           }
         });
+        this.orderChange();
         break;
     }
     // 获取菜品的类型列表
@@ -370,17 +495,16 @@ export default {
       }
     });
     this.handleSearch();
-    this.orderChange();
   },
 };
 </script>
 
 <style scoped>
-.order-button{
-  color:white;
+.order-button {
+  color: white;
   background-color: #f87724;
   border-radius: 2rem;
-  border:none;
+  border: none;
 }
 .cuisine-list {
   list-style: none;

@@ -15,4 +15,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CustomerOrderService extends IService<CustomerOrder> {
 
     Result<CustomerOrder> takeOutAndDineInOrder(String cuisineId, Integer orderType, Boolean isAdd);
+
+    Result<String> placeOrderNow(CustomerOrder customerOrder);
+
+    Result<CustomerOrder> takeOutAndDineInOrder(String cuisineId, Integer orderType, Boolean isAdd, String diningTableId);
 }

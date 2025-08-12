@@ -22,7 +22,6 @@ public class CustomerInterceptor implements HandlerInterceptor {
             InfoThreadLocal.setCustomer(customer);
             InfoThreadLocal.setPass(true);
         }
-        System.out.println(customer);
         return true;
     }
 }

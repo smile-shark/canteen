@@ -100,5 +100,8 @@
         </where>
         group by cuisine.cuisine_id
     </select>
+    <select id="selectCuisineById" resultType="com.smileshark.entity.Cuisine">
+        select name,price,is_special_offer,special_offer,min(cuisine_image.url) as image from cuisine left join cuisine_image on cuisine.cuisine_id = cuisine_image.cuisine_id where cuisine.cuisine_id=#{id}
+    </select>
 
 </mapper>

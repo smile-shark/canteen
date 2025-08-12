@@ -30,4 +30,6 @@ public interface CuisineService extends IService<Cuisine> {
     Result<Page<Cuisine>> inventoryPageList(Integer page, Integer size, String name, String cuisineTypeId, String shopId);
 
     Result<List<Cuisine>> cuisineServiceList(String name, Integer serviceType, String cuisineTypeId, String shopId);
+
+    Result<Cuisine> getCuisineById(String id);
 }

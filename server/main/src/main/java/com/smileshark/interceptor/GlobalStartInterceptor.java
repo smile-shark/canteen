@@ -9,11 +9,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class GlobalStartInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("uri = " + request.getRequestURI());
+        System.out.println("url = " + request.getRequestURL());
         InfoThreadLocal.setRequest(request);
         InfoThreadLocal.setResponse(response);
         InfoThreadLocal.setPass(false);
         return true;
-
     }
 }

@@ -22,4 +22,6 @@ public interface CuisineMapper extends BaseMapper<Cuisine> {
     Page<Cuisine> pageList(Page<Cuisine> objectPage, String name, String cuisineType, Integer state);
 
     List<Cuisine> cuisineServiceList(@Param("name") String name, @Param("serviceType") Integer serviceType, @Param("cuisineTypeId") String cuisineTypeId, @Param("shopId") String shopId);
+
+    Cuisine selectCuisineById(@Param("id") String id);
 }

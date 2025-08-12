@@ -20,6 +20,7 @@ import StaffServiceHome from "@/views/staff/service/Home.vue";
 import ShopList from "@/views/customer/ShopList.vue";
 import CustomerLogin from "@/views/customer/Login.vue";
 import CustomerScanQrCode from "@/views/customer/ScanQrCode.vue";
+import CustomerSubmitOrder from "@/views/customer/home/SubmitOrder.vue";
 
 Vue.use(VueRouter);
 
@@ -263,6 +264,11 @@ const routes = [
     path: "/customer/home/orderservice/:serverType",
     name: "CustomerOrderService",
     component: CustomerOrderService,
+  },
+  {
+    path:'/customer/home/submitorder',
+    name:'CustomerSubmitOrder',
+    component:CustomerSubmitOrder
   },
   {
     path: "/customer/home/tablereservation",

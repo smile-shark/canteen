@@ -150,6 +150,24 @@
         </el-col>
       </el-row>
     </div>
+    <!-- 退出账号 -->
+    <div class="tools-section">
+      <div class="section-header">
+        <span class="section-title">退出账号</span>
+      </div>
+      <el-row :gutter="20" class="tools">
+        <el-col
+          :span="6"
+          class="tool-item"
+          @click.native="$router.push('/customer/login')"
+        >
+          <div class="tool-icon">
+            <i class="el-icon-back"></i>
+          </div>
+          <div class="tool-name" >退出账号</div>
+        </el-col>
+      </el-row>
+    </div>
 
     <div style="height: 20vh"></div>
   </div>
