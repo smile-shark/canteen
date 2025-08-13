@@ -1,8 +1,10 @@
 package com.smileshark.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.common.Result;
 import com.smileshark.entity.DiscountCoupon;
+import com.smileshark.entity.DiscountCouponCustomer;
 import com.smileshark.service.DiscountCouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,10 @@ public class DiscountCouponController {
     @PostMapping("/sendCoupon")
     public Result<?> sendCoupon(@RequestParam String couponId,@RequestParam String customerId){
         return  discountCouponService.sendCoupon(couponId,customerId);
+    }
+    @GetMapping("/usableCoupon")
+    public Result<List<DiscountCouponCustomer>> usableCoupon(@RequestParam String shopId, @RequestParam List<String> cuisineIds, @RequestParam Double price){
+        return discountCouponService.usableCoupon(shopId, cuisineIds,price);
     }
 
 }

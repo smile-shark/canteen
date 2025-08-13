@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.springframework.data.geo.Distance;
 
 /**
  * <p>
@@ -100,4 +101,6 @@ public class Shop {
 
     @TableField(exist = false)
     private Delivery delivery;
+    @TableField(exist = false)
+    private Distance distance;
 }

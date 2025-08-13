@@ -32,25 +32,29 @@ myapi.interceptors.request.use(
   }
 );
 // 响应拦截器
-myapi.interceptors.response.use((response) => {
-  if (loadingInstance) {
-    loadingInstance.close();
-  }
-  if (response.data.code == 401) {
-    // token失效，跳转登录页面
-    router.push("/customer/login");
-  }
-  return response;
-},error=>{
+myapi.interceptors.response.use(
+  (response) => {
+    if (loadingInstance) {
+      loadingInstance.close();
+    }
+    if (response.data.code == 401) {
+      // token失效，跳转登录页面
+      router.push("/customer/login");
+    }
+    return response;
+  },
+  (error) => {
     loadingInstance.close();
     return Promise.reject(error);
-});
+  }
+);
 
 export default {
   global: {
     sendEmail: (email) =>
       myapi.post("/global/sendEmail", null, { params: { email } }),
-    addressToPos:(address)=>myapi.get("/global/addressToPos",{params:{address}})
+    addressToPos: (address) =>
+      myapi.get("/global/addressToPos", { params: { address } }),
   },
   merchant: {
     login: (account, password) =>
@@ -79,9 +83,9 @@ export default {
       myapi.get("/shop/pageListTakeOut", {
         params: { page, size, shopId, isTakeOut },
       }),
-    pageListByRange: (page, size, isDineIn, isTakeOut) =>
+    pageListByRange: (page, size, isDineIn, isTakeOut, longitude, latitude) =>
       myapi.get("/shop/pageListByRange", {
-        params: { page, size, isDineIn, isTakeOut },
+        params: { page, size, isDineIn, isTakeOut, longitude, latitude },
       }),
     infoById: (id) => myapi.get("/shop/infoById", { params: { id } }),
   },
@@ -254,9 +258,17 @@ export default {
       myapi.post("/discountCoupon/sendCoupon", null, {
         params: { couponId, customerId },
       }),
+    usableCoupon: (shopId, cuisineIds, price) =>
+      myapi.get("/discountCoupon/usableCoupon", {
+        params: { shopId, cuisineIds, price },
+        paramsSerializer:{
+          indexes:null
+        }
+      }),
   },
-  discountCouponCustomer:{
-    list:(state)=>myapi.get("/discountCouponCustomer/list",{params:{state}}),
+  discountCouponCustomer: {
+    list: (state) =>
+      myapi.get("/discountCouponCustomer/list", { params: { state } }),
   },
 };
 

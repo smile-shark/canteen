@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
+
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,8 +19,7 @@ import lombok.experimental.Accessors;
  * @author smile鲨鱼
  * @since 2025年08月04日
  */
-@Getter
-@Setter
+@Data
 @Accessors(chain = true)
 @TableName("discount_coupon_customer")
 public class DiscountCouponCustomer {

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.common.Result;
 import com.smileshark.entity.DiscountCoupon;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.smileshark.entity.DiscountCouponCustomer;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface DiscountCouponService extends IService<DiscountCoupon> {
     Result<List<DiscountCoupon>> sendCouponList();
 
     Result<?> sendCoupon(String couponId, String customerId);
+
+    Result<List<DiscountCouponCustomer>> usableCoupon(String shopId, List<String> cuisineIds, Double price);
 }

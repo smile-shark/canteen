@@ -86,10 +86,10 @@
       >
         <img :src="dish.image" alt="dish" class="dish-img" />
         <div class="dish-info">
-          <h3 class="dish-name">{{ dish.name }}</h3>
+          <h3 class="dish-name">{{ dish?.name }}</h3>
           <p class="month-sales">月售{{ dish.monthlySales }}</p>
           <p class="month-sales">剩余{{ dish.inventory }}</p>
-          <p class="price">¥{{ dish.price }} <span v-if="dish.isSpecialOffer==1" style="color: #e56534;font-weight: bold;">￥{{ dish.specialOffer }}</span></p>
+          <p class="price">¥{{ dish.price }} <span v-if="dish?.isSpecialOffer==1" style="color: #e56534;font-weight: bold;">￥{{ dish.specialOffer }}</span></p>
         </div>
         <div
           class="add-btn"
@@ -146,7 +146,7 @@
           <img src="@/assets/购物篮.png" style="transform: scale(1.5)" />
         </div>
         <img src="@/assets/购物篮.png" alt="cart" class="cart-img" />
-        <span class="total-price">¥0</span>
+        <span class="total-price">¥{{ customerOrder?.allPrice||0 }}</span>
       </div>
     </div>
     <el-drawer
@@ -162,7 +162,7 @@
           :key="index"
           @click="changeCuisineType(cuisineType.cuisineTypeId)"
         >
-          {{ cuisineType.name }}
+          {{ cuisineType?.name }}
         </li>
       </ul>
     </el-drawer>
@@ -190,7 +190,7 @@
             {{
               cuisineOptions.find(
                 (item) => item.cuisineId == customerOrderCuisine.cuisineId
-              ).name
+              )?.name
             }}
           </el-col>
           <el-col :span="6" style="color: #e56534">
@@ -351,6 +351,9 @@ export default {
     },
     // 获取菜品的真实价格
     realyPrice(cuisine) {
+      if(!cuisine){
+        return 0
+      }
       return cuisine.isSpecialOffer == 1
         ? cuisine.specialOffer != null
           ? cuisine.specialOffer
@@ -402,7 +405,6 @@ export default {
                 if (data.code == 401) {
                   this.$message.error("登录过期");
                   this.$router.push("/customer/login");
-                  this.closeSocket();
                 } else if (data.code != 200) {
                   this.$message.error(data.msg);
                 }
@@ -413,7 +415,6 @@ export default {
           this.stompClient.subscribe(
             `/topic/table/${this.diningTableInfo.diningTableId}`,
             (message) => {
-              console.log(JSON.stringify(message.body));
 
               if (message.body) {
                 let data = JSON.parse(message.body);
@@ -496,6 +497,12 @@ export default {
     });
     this.handleSearch();
   },
+  beforeRouteLeave(to,from,next){
+    if(this.stompClient){
+      this.closeSocket()
+    }
+    next()
+  }
 };
 </script>
 

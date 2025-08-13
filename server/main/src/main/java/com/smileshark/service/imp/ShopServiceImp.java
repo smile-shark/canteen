@@ -1,6 +1,7 @@
 package com.smileshark.service.imp;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +16,11 @@ import com.smileshark.service.ShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smileshark.utils.StrUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.geo.*;
+import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.domain.geo.GeoReference;
+import org.springframework.data.redis.domain.geo.Metrics;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +39,13 @@ import java.util.List;
 public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements ShopService {
     private final ShopMapper shopMapper;
     private final DeliveryMapper deliveryMapper;
+    private final StringRedisTemplate stringRedisTemplate;
     @Override
     public Result<?> addShop(Shop shop) {
-        shop.setShopId(IdUtil.simpleUUID());
+        String shopId = IdUtil.simpleUUID();
+        shop.setShopId(shopId);
+        // 将店铺的位置数据添加到redis中
+        stringRedisTemplate.opsForGeo().add("shop_location",new Point(shop.getLongitude(),shop.getLatitude()),shopId);
         if(this.save(shop)){
             return Result.success("添加成功");
         }else {
@@ -99,12 +109,33 @@ public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements Sho
     }
 
     @Override
-    public Result<List<Shop>> pageListByRange(Integer page, Integer size, Integer isDineIn, Integer isTakeOut) {
-        List<Shop> shops = list();
-        for (Shop shop : shops) {
-            shop.setDelivery(deliveryMapper.selectOne(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, shop.getShopId())));
+    public Result<List<Shop>> pageListByRange(Integer page, Integer size, Integer isDineIn, Integer isTakeOut, Double longitude, Double latitude) {
+        // 先判断是否有经纬度，如果有位置信息就使用位置信息进行判断
+        if(longitude != null&&latitude != null){
+            // 使用Metrics.KILOMETERS表示单位为公里，30表示半径为30公里
+            Circle circle = new Circle(new Point(longitude, latitude), Metrics.KILOMETERS.getMultiplier() * 30);
+            List<GeoResult<RedisGeoCommands.GeoLocation<String>>> list = stringRedisTemplate.opsForGeo().radius("shop_location", circle, RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().sortAscending()).getContent();
+            if(list.isEmpty()){
+                List<Shop> shops = list();
+                for (Shop shop : shops) {
+                    shop.setDelivery(deliveryMapper.selectOne(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, shop.getShopId())));
+                }
+                return Result.success(shops);
+            }
+            List<Shop> shopList = list.stream().map(result -> {
+                Shop shop = shopMapper.selectById(result.getContent().getName());
+                shop.setDistance(result.getDistance());
+                shop.setDelivery(deliveryMapper.selectOne(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, shop.getShopId())));
+                return shop;
+            }).toList();
+            return Result.success(shopList);
+        }else {
+            List<Shop> shops = list();
+            for (Shop shop : shops) {
+                shop.setDelivery(deliveryMapper.selectOne(new LambdaQueryWrapper<>(Delivery.class).eq(Delivery::getShopId, shop.getShopId())));
+            }
+            return Result.success(shops);
         }
-        return Result.success(shops);
     }
 
     @Override
@@ -124,5 +155,17 @@ public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements Sho
             throw new BusinessException(ResultCode.DELETE_ERROR);
         }
         return Result.success(ResultCode.DELETE_SUCCESS);
+    }
+
+    @Override
+    public Result<?> updateShop(Shop shop) {
+        // 重置shop的位置信息
+        // 删除原有的信息
+        stringRedisTemplate.opsForGeo().remove("shop_location",shop.getShopId());
+
+        // 将店铺的位置数据添加到redis中
+        stringRedisTemplate.opsForGeo().add("shop_location",new Point(shop.getLongitude(),shop.getLatitude()),shop.getShopId());
+
+        return Result.success(updateById(shop) ? ResultCode.UPDATE_SUCCESS : ResultCode.UPDATE_ERROR);
     }
 }

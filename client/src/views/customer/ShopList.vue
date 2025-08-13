@@ -25,7 +25,7 @@
         <div class="shop-header">
           <div class="shop-name-container">
             <h3 class="shop-name">{{ shop.name }}</h3>
-            <span class="shop-order">#{{ shop.shopOrder }}</span>
+            <span class="shop-order" v-if="shop.distance">距离{{ (shop.distance.value/1000).toFixed(1)   }}公里</span>
           </div>
           <div class="shop-status" :class="getShopStatusClass(shop)">
             {{ getShopStatusText(shop) }}
@@ -91,7 +91,8 @@
 </template>
 
 <script>
-import api from "@/api";
+import api from "@/api";  
+import { AMap } from "@/amp";
 
 export default {
   name: "ShopSelection",
@@ -105,6 +106,8 @@ export default {
 
       page: 1,
       size: 10,
+      lat:null,
+      lng:null,
     };
   },
   watch:{
@@ -123,13 +126,15 @@ export default {
         page = 1;
       }
       this.page = page;
+      
       api.shop
         .pageListByRange(
           this.page,
           this.size,
           this.selectedServiceType == "dineIn" ? 0 : 1,
-          this.size,
-          this.selectedServiceType == "takeOut" ? 0 : 1
+          this.selectedServiceType == "takeOut" ? 0 : 1,
+          this.lng,
+          this.lat
         )
         .then((res) => {
           if (res.data.code == 200) {
@@ -226,9 +231,15 @@ export default {
     handleBack() {
       this.$router.back();
     },
+    onComplete(data){
+      this.lat=data.position.kT
+      this.lng=data.position.KL
+      this.handleSearch();
+    }
   },
   mounted() {
-    this.handleSearch();
+    // 这里需要获取用户的定位，然后根据定位来查找对应的门店
+    AMap(this.onComplete)
   },
 };
 </script>

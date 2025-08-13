@@ -34,7 +34,7 @@ private final ShopService shopService;
     }
     @PutMapping("/update")
     public Result<?> update(@RequestBody Shop shop){
-        return shopService.updateById(shop) ? Result.success(ResultCode.UPDATE_SUCCESS) : Result.error(ResultCode.UPDATE_ERROR);
+        return shopService.updateShop(shop);
     }
     @DeleteMapping("/delete")
     public Result<?> delete(@RequestParam String id){
@@ -53,8 +53,8 @@ private final ShopService shopService;
         return shopService.pageListTakeOut(page, size, shopId, isTakeOut);
     }
     @GetMapping("/pageListByRange")
-    public Result<List<Shop>> pageListByRange(@RequestParam(defaultValue = "1") Integer page,@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) Integer isDineIn,@RequestParam(required = false)Integer isTakeOut ){
-        return shopService.pageListByRange(page, size, isDineIn, isTakeOut);
+    public Result<List<Shop>> pageListByRange(@RequestParam(defaultValue = "1") Integer page,@RequestParam(defaultValue = "10") Integer size, @RequestParam(required = false) Integer isDineIn,@RequestParam(required = false)Integer isTakeOut ,@RequestParam(required = false) Double longitude,@RequestParam(required = false) Double latitude){
+        return shopService.pageListByRange(page, size, isDineIn, isTakeOut, longitude, latitude);
     }
     @GetMapping("/infoById")
     public Result<Shop> infoById(@RequestParam String id){
