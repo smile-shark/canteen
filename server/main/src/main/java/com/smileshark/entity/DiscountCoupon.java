@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -65,7 +67,7 @@ public class DiscountCoupon {
     /**
      * 满多少可用使用的门槛
      */
-    @TableField("condition")
+    @TableField("`condition`")
     private Double condition;
 
     /**
@@ -103,4 +105,10 @@ public class DiscountCoupon {
      */
     @TableField("use_area")
     private Integer useArea;
+
+
+    @TableField(exist = false)
+    private List<DiscountCouponAreaCuisine>  discountCouponAreaCuisines; // 菜品的范围
+    @TableField(exist = false)
+    private List<DiscountCouponAreaCuisineType> discountCouponAreaCuisineTypes; // 菜品分类的范围
 }

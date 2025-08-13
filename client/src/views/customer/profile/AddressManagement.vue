@@ -3,9 +3,11 @@
     <!-- 返回按钮 -->
     <el-row>
       <el-col :span="2">
-        <el-button icon="el-icon-back" type="text" @click="$router.push('/customer/profile')"></el-button>
+        <el-button 
+          icon="el-icon-arrow-left" type="text" @click="$router.push('/customer/profile')"
+          style="font-weight: bold; font-size: 2rem"></el-button>
       </el-col>
-      <el-col :span="20">
+      <el-col :span="20" style="padding: 12px 0">
         <h2 class="page-title">地址管理</h2>
       </el-col>
     </el-row>

@@ -28,7 +28,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/cuisineType/list",
                         "/cuisine/cuisineServiceList",
                         "/diningTable/infoById",
-                        "/wallet/infoById"
+                        "/wallet/infoById",
+                        "/discountCouponCustomer/list"
                 );
         registry.addInterceptor(staffInterceptor);
         registry.addInterceptor(merchantInterceptor);

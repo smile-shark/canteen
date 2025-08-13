@@ -64,4 +64,7 @@ public class DiscountCouponCustomer {
      */
     @TableField("state")
     private Integer state;
+
+    @TableField(exist = false)
+    private DiscountCoupon discountCoupon;
 }

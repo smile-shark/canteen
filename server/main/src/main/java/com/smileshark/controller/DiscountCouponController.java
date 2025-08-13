@@ -5,10 +5,9 @@ import com.smileshark.common.Result;
 import com.smileshark.entity.DiscountCoupon;
 import com.smileshark.service.DiscountCouponService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +31,18 @@ public class DiscountCouponController {
     ){
         return discountCouponService.pageList(page, size, type, shopId);
     }
+    @PostMapping("/add")
+    public Result<?> add(@RequestBody DiscountCoupon discountCoupon){
+        return discountCouponService.add(discountCoupon);
+    }
+    // 获取可以发放，没有过期，还有剩余的优惠券
+    @GetMapping("/sendCouponList")
+    public Result<List<DiscountCoupon>> sendCouponList(){
+        return discountCouponService.sendCouponList();
+    }
+    @PostMapping("/sendCoupon")
+    public Result<?> sendCoupon(@RequestParam String couponId,@RequestParam String customerId){
+        return  discountCouponService.sendCoupon(couponId,customerId);
+    }
+
 }

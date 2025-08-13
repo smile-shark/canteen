@@ -118,12 +118,9 @@
             />
           </el-form-item>
           <el-form-item label="门店名称" prop="shopOrder">
-            <el-input
-              v-model="form.name"
-              placeholder="请输入门店名称"
-            />
+            <el-input v-model="form.name" placeholder="请输入门店名称" />
           </el-form-item>
-          <el-form-item label="所在省份" prop="provinceId">
+          <!-- <el-form-item label="所在省份" prop="provinceId">
             <el-select
               v-model="form.provinceId"
               placeholder="请选择省份"
@@ -151,9 +148,31 @@
                 :value="area.areaId"
               />
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="详细地址" prop="address">
-            <el-input v-model="form.address" placeholder="请输入详细地址" />
+            <el-input v-model="form.address" placeholder="请输入详细地址">
+              <el-button slot="append" icon="el-icon-search" @click="getAddress"
+                >获取定位</el-button
+              >
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            lable="快捷位置"
+            v-if="geocodes && geocodes.length > 0"
+            @change="handleAddressChange"
+          >
+            <el-select v-model="form.address" >
+              <el-option
+                @click.native="handleAddressChange(geocode)"
+                v-for="(geocode, index) in geocodes"
+                :key="index"
+                :label="geocode.formatted_address"
+                :value="geocode.formatted_address"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="经纬度" required>
+            {{ form.longitude || "暂无" }} - {{ form.latitude || "暂无" }}
           </el-form-item>
           <el-form-item label="联系电话" prop="phone">
             <el-input v-model="form.phone" placeholder="请输入联系电话" />
@@ -338,6 +357,7 @@ export default {
   name: "StoreManagement",
   data() {
     return {
+      geocodes: [],
       // 搜索表单
       searchForm: {
         shopOrder: "",
@@ -368,6 +388,8 @@ export default {
         isTakeOut: 0,
         openingHoursStart: "",
         openingHoursEnd: "",
+        longitude: "",
+        latitude: "",
       },
       // 表单验证规则
       formRules: {
@@ -413,6 +435,18 @@ export default {
     };
   },
   methods: {
+    getAddress() {
+      api.global.addressToPos(this.form.address).then((res) => {
+        if (res.data.code == 200) {
+          this.geocodes = JSON.parse(res.data.data)?.geocodes;
+        } else {
+          this.$message.error(res.data.msg);
+        }
+      });
+    },
+    handleAddressChange(value) {
+      [this.form.longitude,this.form.latitude]=value.location.split(',')
+    },
     // 开启对于外卖的配置
     updateDelivery() {
       // 外卖的开始时间不能早于营业开始时间
@@ -552,7 +586,7 @@ export default {
         this.$refs.formRef.resetFields();
       });
       this.form = {
-        naem:'',
+        naem: "",
         shopOrder: "",
         provinceId: "",
         areaId: "",

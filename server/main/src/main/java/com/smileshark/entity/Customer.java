@@ -114,4 +114,7 @@ public class Customer {
      */
     @TableField("shop_id")
     private String shopId;
+
+    @TableField(exist = false)
+    private Wallet wallet;
 }

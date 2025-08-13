@@ -2,6 +2,7 @@ package com.smileshark.service.imp;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.code.ResultCode;
 import com.smileshark.common.Result;
 import com.smileshark.entity.Customer;
@@ -13,6 +14,7 @@ import com.smileshark.service.CustomerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smileshark.service.WalletService;
 import com.smileshark.service.global.EmailService;
+import com.smileshark.utils.StrUtil;
 import com.smileshark.utils.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -108,5 +110,12 @@ public class CustomerServiceImp extends ServiceImpl<CustomerMapper, Customer> im
         result.put("token", tokenUtil.createToken(customer));
 
         return Result.success("注册成功", result);
+    }
+
+    @Override
+    public Result<Page<Customer>> pageList(Integer page, Integer size, String name, String shopId) {
+        Page<Customer> customerPage=customerMapper.pageList(new Page<>(page, size), StrUtil.globbing(name),shopId);
+
+        return Result.success(customerPage);
     }
 }

@@ -17,5 +17,23 @@
     <sql id="Base_Column_List">
         discount_coupon_customer_id, customer_id, staff_id, discount_coupon_id, get_time, use_time, state
     </sql>
+    <resultMap id="discountCouponCustomerListMap" type="com.smileshark.entity.DiscountCouponCustomer">
+        <id column="discount_coupon_customer_id" property="discountCouponCustomerId" />
+        <result column="customer_id" property="customerId" />
+        <result column="staff_id" property="staffId" />
+        <result column="discount_coupon_id" property="discountCouponId" />
+        <result column="get_time" property="getTime" />
+        <result column="use_time" property="useTime" />
+        <result column="state" property="state" />
+        <association property="discountCoupon" javaType="com.smileshark.entity.DiscountCoupon" column="discount_coupon_id" select="com.smileshark.mapper.DiscountCouponMapper.selectById" />
+    </resultMap>
+
+    <select id="discountCouponCustomerList" resultMap="discountCouponCustomerListMap">
+        select * from discount_coupon_customer join discount_coupon on discount_coupon_customer.discount_coupon_id = discount_coupon.discount_coupon_id where customer_id = #{customerId}
+        <if test="state!= null">
+            and state = #{state}
+        </if>
+        order by get_time desc
+    </select>
 
 </mapper>

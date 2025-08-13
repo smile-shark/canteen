@@ -41,12 +41,16 @@ myapi.interceptors.response.use((response) => {
     router.push("/customer/login");
   }
   return response;
+},error=>{
+    loadingInstance.close();
+    return Promise.reject(error);
 });
 
 export default {
   global: {
     sendEmail: (email) =>
       myapi.post("/global/sendEmail", null, { params: { email } }),
+    addressToPos:(address)=>myapi.get("/global/addressToPos",{params:{address}})
   },
   merchant: {
     login: (account, password) =>
@@ -151,6 +155,8 @@ export default {
     delete: (id) => myapi.delete("/rawMaterialType/delete", { params: { id } }),
   },
   cuisine: {
+    simpleListByShopId: (shopId) =>
+      myapi.get("/cuisine/simpleListByShopId", { params: { shopId } }),
     pageList: (page, size, cuisineName, cuisineType, state) =>
       myapi.get("/cuisine/pageList", {
         params: { page, size, cuisineName, cuisineType, state },
@@ -221,6 +227,8 @@ export default {
       }),
     register: (customer, verifyCode) =>
       myapi.post("/customer/register", customer, { params: { verifyCode } }),
+    pageList: (page, size, name, shopId) =>
+      myapi.get("/customer/pageList", { params: { page, size, name, shopId } }),
   },
   wallet: {
     infoById: (id) => myapi.get("/wallet/infoById", { params: { id } }),
@@ -240,6 +248,15 @@ export default {
       myapi.get("/discountCoupon/pageList", {
         params: { page, size, type, shopId },
       }),
+    add: (discountCoupon) => myapi.post("/discountCoupon/add", discountCoupon),
+    sendCouponList: () => myapi.get("/discountCoupon/sendCouponList"),
+    sendCoupon: (couponId, customerId) =>
+      myapi.post("/discountCoupon/sendCoupon", null, {
+        params: { couponId, customerId },
+      }),
+  },
+  discountCouponCustomer:{
+    list:(state)=>myapi.get("/discountCouponCustomer/list",{params:{state}}),
   },
 };
 
@@ -254,4 +271,16 @@ export function formatDate(date) {
   const day = String(d.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`; // "2025-08-08"
+}
+export function formatDateTime(dateTime) {
+  if (!dateTime) return null;
+  const dt = new Date(dateTime);
+  const year = dt.getFullYear();
+  const month = String(dt.getMonth() + 1).padStart(2, "0");
+  const day = String(dt.getDate()).padStart(2, "0");
+  const hour = String(dt.getHours()).padStart(2, "0");
+  const minute = String(dt.getMinutes()).padStart(2, "0");
+  const second = String(dt.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }

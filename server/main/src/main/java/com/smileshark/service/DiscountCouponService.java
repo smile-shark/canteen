@@ -5,6 +5,8 @@ import com.smileshark.common.Result;
 import com.smileshark.entity.DiscountCoupon;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 优惠券 服务类
@@ -16,4 +18,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface DiscountCouponService extends IService<DiscountCoupon> {
 
     Result<Page<DiscountCoupon>> pageList(Integer page, Integer size, Integer type, String shopId);
+
+    Result<?> add(DiscountCoupon discountCoupon);
+
+    Result<List<DiscountCoupon>> sendCouponList();
+
+    Result<?> sendCoupon(String couponId, String customerId);
 }

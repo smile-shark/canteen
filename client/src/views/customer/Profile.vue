@@ -22,7 +22,7 @@
     <!-- 钱包和积分区域 -->
     <div class="wallet-points">
       <div class="wallet-item">
-        <div class="amount">{{ walletInfo.balance.toFixed(2) }}</div>
+        <div class="amount">{{ walletInfo.balance?.toFixed(2) }}</div>
         <div class="label">钱包</div>
       </div>
       <div class="points-item">

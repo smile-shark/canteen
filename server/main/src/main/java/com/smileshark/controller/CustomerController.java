@@ -1,5 +1,6 @@
 package com.smileshark.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.common.Result;
 import com.smileshark.entity.Customer;
 import com.smileshark.service.CustomerService;
@@ -36,5 +37,9 @@ public class CustomerController {
         @PostMapping("/register")
     public Result<Map<String,Object>> register(@RequestBody Customer customer,@RequestParam String verifyCode){
         return customerService.register(customer, verifyCode);
+    }
+    @GetMapping("/pageList")
+    public Result<Page<Customer>> pageList(@RequestParam(defaultValue = "1")Integer page,@RequestParam(defaultValue = "10")Integer size,@RequestParam(required = false) String name,@RequestParam(required = false) String shopId){
+        return  customerService.pageList(page,size,name,shopId);
     }
 }

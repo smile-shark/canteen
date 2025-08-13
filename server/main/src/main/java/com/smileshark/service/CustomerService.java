@@ -1,5 +1,6 @@
 package com.smileshark.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smileshark.common.Result;
 import com.smileshark.entity.Customer;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -21,4 +22,6 @@ public interface CustomerService extends IService<Customer> {
     Result<Map<String, Object>> loginForVerifyCode(String account, String verifyCode);
 
     Result<Map<String, Object>> register(Customer customer, String verifyCode);
+
+    Result<Page<Customer>> pageList(Integer page, Integer size, String name, String shopId);
 }

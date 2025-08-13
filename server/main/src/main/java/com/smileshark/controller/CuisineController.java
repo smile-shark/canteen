@@ -57,5 +57,10 @@ public class CuisineController {
     public Result<Cuisine> getSimpleCuisineById(@RequestParam String id){
         return cuisineService.getCuisineById(id);
     }
+    // 根据门店进行查询
+    @GetMapping("/simpleListByShopId")
+    public Result<List<Cuisine>> simpleListByShopId(@RequestParam String shopId){
+        return   cuisineService.simpleListByShopId(shopId);
+    }
 
 }

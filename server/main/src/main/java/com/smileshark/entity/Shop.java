@@ -92,6 +92,11 @@ public class Shop {
      */
     @TableField("opening_hours_end")
     private LocalTime openingHoursEnd;
+    @TableField("longitude")
+    private Double longitude;
+    @TableField("latitude")
+    private Double latitude;
+
 
     @TableField(exist = false)
     private Delivery delivery;

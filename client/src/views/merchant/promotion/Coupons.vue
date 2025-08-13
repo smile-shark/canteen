@@ -55,46 +55,47 @@
         label="优惠券名称"
         align="center"
       ></el-table-column>
-      <el-table-column
-        prop="denomination"
-        label="面值"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="type"
-        label="优惠券类型"
-        align="center"
-      ></el-table-column>
-      <el-table-column prop="status" label="状态" align="center">
+      <el-table-column label="优惠券类型" align="center">
+        <template #default="scope">
+          {{ typeOptions.find((item, index) => index == scope.row.type) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="优惠度">
+        <template #default="scope">
+          <span v-if="scope.row.type == 0">
+            优惠 ￥ {{ scope.row.price }}
+          </span>
+          <span v-if="scope.row.type == 1"> {{ scope.row.discount }} 折 </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" align="center">
         <template #default="scope">
           <el-tag
             :type="
-              scope.row.status === '未过期'
-                ? 'success'
-                : scope.row.status === '已过期'
-                ? 'info'
-                : 'danger'
+              new Date() < new Date(scope.row.endTime)
+                ? 'success' 
+                : 'danger' 
             "
           >
-            {{ scope.row.status }}
+            {{ new Date() < new Date(scope.row.endTime)? "未过期" : "已过期" }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column
-        prop="total"
+        prop="grantNum"
         label="发放量"
         align="center"
       ></el-table-column>
-      <el-table-column
-        prop="used"
-        label="使用量"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="validPeriod"
-        label="有效期"
-        align="center"
-      ></el-table-column>
+      <el-table-column label="使用量" align="center">
+        <template #default="scope">
+          {{ scope.row.useNum }}
+        </template></el-table-column
+      >
+      <el-table-column label="有效期" align="center">
+        <template #default="scope">
+          {{ scope.row.startTime }}<br />{{ scope.row.endTime }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="180">
         <template #default="scope">
           <el-button type="text" @click="handleView(scope.row)">查看</el-button>
@@ -192,7 +193,11 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="适用门店" prop="shopId">
-          <el-select v-model="couponForm.shopId" placeholder="请选择门店">
+          <el-select
+            v-model="couponForm.shopId"
+            placeholder="请选择门店"
+            @change="shopChange"
+          >
             <el-option label="全部" value=""></el-option>
             <el-option
               v-for="(shop, index) in shopOptions"
@@ -203,7 +208,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="使用范围">
-          <el-radio-group v-model="couponForm">
+          <el-radio-group v-model="couponForm.useArea">
             <el-radio
               v-for="(value, index) in ['全部菜品', '指定菜品', '指定分类']"
               :key="index"
@@ -211,6 +216,39 @@
               >{{ value }}</el-radio
             >
           </el-radio-group>
+        </el-form-item>
+        <el-form-item label="选择菜品" v-if="couponForm.useArea == 1">
+          <el-table :data="couponForm.discountCouponAreaCuisines">
+            <el-table-column
+              prop="num"
+              label="菜品编号"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              prop="name"
+              label="菜品名称"
+              align="center"
+            ></el-table-column>
+            <el-table-column label="操作" align="center">
+              <template #default="scope">
+                <div @click="deleteFormCuisine(scope.row)">删除</div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+        <el-form-item label="选择分类" v-if="couponForm.useArea == 2">
+          <el-table :data="couponForm.discountCouponAreaCuisineTypes">
+            <el-table-column
+              prop="name"
+              label="分类名称"
+              align="center"
+            ></el-table-column>
+            <el-table-column label="操作" align="center">
+              <template #default="scope">
+                <div @click="deleteFormCuisineType(scope.row)">删除</div>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -224,7 +262,6 @@
       title="优惠券详情"
       :visible.sync="detailDialogVisible"
       width="80%"
-      fullscreen="false"
     >
       <coupon-detail
         :coupon-id="currentCouponId"
@@ -235,7 +272,7 @@
 </template>
 
 <script>
-import api from "@/api";
+import api, { formatDateTime } from "@/api";
 import CouponDetail from "./CouponDetail.vue";
 
 export default {
@@ -247,8 +284,7 @@ export default {
     return {
       typeOptions: ["满减券", "折扣券"],
       shopOptions: [],
-      cuisineTypeOptions:[],
-      cuisineOptions:[],
+      cuisineTypeOptions: [],
       // 筛选表单
       searchForm: {
         type: "",
@@ -283,12 +319,26 @@ export default {
         astrictNum: 0,
         shopId: "",
         useArea: 0,
+        discountCouponAreaCuisines: [],
+        discountCouponAreaCuisineTypes: [],
       },
       // 选中的优惠券
       selectedCoupons: [],
     };
   },
   methods: {
+    deleteFormCuisine(row) {
+      this.couponForm.discountCouponAreaCuisines =
+        this.couponForm.discountCouponAreaCuisines.filter(
+          (item) => item.cuisineId != row.cuisineId
+        );
+    },
+    deleteFormCuisineType(row) {
+      this.couponForm.discountCouponAreaCuisineTypes =
+        this.couponForm.discountCouponAreaCuisineTypes.filter(
+          (item) => item.cuisineTypeId != row.cuisineTypeId
+        );
+    },
     // 查询
     handleSearch(page) {
       if (typeof page != "number") {
@@ -325,7 +375,7 @@ export default {
     // 打开新增弹窗
     openAddCouponDialog() {
       this.isEdit = false;
-      this.couponForm={
+      this.couponForm = {
         discountCouponId: "",
         startTime: "",
         endTime: "",
@@ -340,7 +390,13 @@ export default {
         astrictNum: 0,
         shopId: "",
         useArea: 0,
+        discountCouponAreaCuisines: [],
+        discountCouponAreaCuisineTypes: [],
       };
+      this.shopChange();
+      this.couponForm.discountCouponAreaCuisineTypes = JSON.parse(
+        JSON.stringify(this.cuisineTypeOptions)
+      );
       this.couponDialogVisible = true;
     },
     // 编辑优惠券
@@ -368,58 +424,32 @@ export default {
         this.$message.warning("请输入优惠券名称");
         return;
       }
-      if (!this.couponForm.type) {
-        this.$message.warning("请选择优惠券类型");
+      if (this.couponForm.type != 0 && this.couponForm.type != 1) {
+        this.$message.warning("请选择正确的类型");
         return;
       }
-      if (!this.couponForm.denomination) {
-        this.$message.warning("请输入面值");
-        return;
-      }
-      if (
-        !this.couponForm.validPeriod ||
-        this.couponForm.validPeriod.length !== 2
-      ) {
-        this.$message.warning("请选择有效期");
-        return;
-      }
-      if (!this.couponForm.total || this.couponForm.total <= 0) {
+      if (!this.couponForm.grantNum || this.couponForm.grantNum <= 0) {
         this.$message.warning("请输入有效的发放总量");
         return;
       }
-
-      // 格式化有效期显示文本
-      const validPeriodText = `${this.couponForm.validPeriod[0]} 至 ${this.couponForm.validPeriod[1]}`;
-
       if (this.isEdit) {
-        // 编辑操作
-        const index = this.tableData.findIndex(
-          (item) => item.id === this.currentCouponId
-        );
-        if (index !== -1) {
-          this.tableData[index] = {
-            ...this.tableData[index],
-            ...this.couponForm,
-            validPeriod: validPeriodText,
-            status: "未过期", // 默认为未过期状态
-          };
-        }
         this.$message.success("优惠券编辑成功");
+        this.couponDialogVisible = false;
       } else {
         // 新增操作
-        const newCoupon = {
-          id: this.tableData.length + 1,
-          ...this.couponForm,
-          validPeriod: validPeriodText,
-          status: "未过期",
-          used: 0,
-        };
-        this.tableData.unshift(newCoupon);
-        this.pagination.total++;
-        this.$message.success("优惠券新增成功");
+        // 格式化日期
+        // this.couponForm.startTime = formatDateTime(this.couponForm.startTime);
+        // this.couponForm.endTime = formatDateTime(this.couponForm.endTime);
+        api.discountCoupon.add(this.couponForm).then((res) => {
+          if (res.data.code == 200) {
+            this.$message.success("优惠券新增成功");
+            this.couponDialogVisible = false;
+            this.searchForm();
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        });
       }
-
-      this.couponDialogVisible = false;
     },
     // 查看详情
     handleView(row) {
@@ -445,11 +475,24 @@ export default {
           this.$message.info("已取消删除");
         });
     },
+    // 根据门店选择改变时获取对应的菜品
+    shopChange() {
+      api.cuisine.simpleListByShopId(this.couponForm.shopId).then((res) => {
+        if (res.data.code == 200) {
+          this.couponForm.discountCouponAreaCuisines = res.data.data;
+        }
+      });
+    },
   },
   created() {
     api.shop.simpleList().then((res) => {
       if (res.data.code == 200) {
         this.shopOptions = res.data.data;
+      }
+    });
+    api.cuisineType.list().then((res) => {
+      if (res.data.code == 200) {
+        this.cuisineTypeOptions = res.data.data;
       }
     });
   },

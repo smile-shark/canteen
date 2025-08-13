@@ -32,4 +32,6 @@ public interface CuisineService extends IService<Cuisine> {
     Result<List<Cuisine>> cuisineServiceList(String name, Integer serviceType, String cuisineTypeId, String shopId);
 
     Result<Cuisine> getCuisineById(String id);
+
+    Result<List<Cuisine>> simpleListByShopId(String shopId);
 }

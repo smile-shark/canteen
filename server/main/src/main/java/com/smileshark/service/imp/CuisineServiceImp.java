@@ -133,4 +133,13 @@ public class CuisineServiceImp extends ServiceImpl<CuisineMapper, Cuisine> imple
     public Result<Cuisine> getCuisineById(String id) {
         return Result.success(cuisineMapper.selectCuisineById(id));
     }
+
+    @Override
+    public Result<List<Cuisine>> simpleListByShopId(String shopId) {
+        LambdaQueryChainWrapper<Cuisine> query = lambdaQuery().select(Cuisine::getCuisineId, Cuisine::getName, Cuisine::getNum);
+        if(shopId!=null&&!shopId.isEmpty()){
+            query.eq(Cuisine::getShopId, shopId);
+        }
+        return Result.success(query.list());
+    }
 }

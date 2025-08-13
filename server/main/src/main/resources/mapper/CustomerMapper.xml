@@ -25,5 +25,35 @@
     <sql id="Base_Column_List">
         customer_id, integral, wallet_id, head_portrait, account, password, level, consumption_plance, consumption_num, delivery_address_id, phone, sex, birthday, create_time, shop_id
     </sql>
+    <resultMap id="pageListMap" type="com.smileshark.entity.Customer">
+        <id column="customer_id" property="customerId" />
+        <result column="integral" property="integral" />
+        <result column="wallet_id" property="walletId" />
+        <result column="head_portrait" property="headPortrait" />
+        <result column="account" property="account" />
+        <result column="password" property="password" />
+        <result column="level" property="level" />
+        <result column="consumption_plance" property="consumptionPlance" />
+        <result column="consumption_num" property="consumptionNum" />
+        <result column="delivery_address_id" property="deliveryAddressId" />
+        <result column="phone" property="phone" />
+        <result column="sex" property="sex" />
+        <result column="birthday" property="birthday" />
+        <result column="create_time" property="createTime" />
+        <result column="shop_id" property="shopId" />
+        <association property="wallet" javaType="com.smileshark.entity.Wallet" select="com.smileshark.mapper.WalletMapper.selectById" column="wallet_id" />
+    </resultMap>
+
+    <select id="pageList" resultMap="pageListMap">
+        select * from customer
+        <where>
+            <if test="name!=null and name!=''">
+                account like #{name}
+            </if>
+            <if test="shopId!=null and shopId!=''">
+                and shop_id=#{shopId}
+            </if>
+        </where>
+    </select>
 
 </mapper>
