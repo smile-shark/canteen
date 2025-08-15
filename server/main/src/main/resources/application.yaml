@@ -17,6 +17,12 @@ spring:
     password: ligogminhrvacbae
     ssl:
       enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitMQLite
+    password: rabbitMQLite
+    virtual-host: rabbitMQTest
 redis:
   key:
     key5min: 'verify:email:limit:5min:'

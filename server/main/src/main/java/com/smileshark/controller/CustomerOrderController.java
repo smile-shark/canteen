@@ -31,7 +31,7 @@ public class CustomerOrderController {
     }
     // 用户下单，返回订单的id
     @PostMapping("/placeOrderNow")
-    public Result<String> placeOrderNow(@RequestBody CustomerOrder customerOrder){
-        return customerOrderService.placeOrderNow(customerOrder);
+    public Result<String> placeOrderNow(@RequestParam Integer orderType,@RequestParam String diningTableId,@RequestParam(required = false)String discountCouponCustomerId,@RequestParam(required = false)String deliveryAddressId,@RequestParam(required = false)Double packingCharges,@RequestParam(required = false)Double deliveryCost){
+        return customerOrderService.placeOrderNow(orderType,diningTableId,discountCouponCustomerId,deliveryAddressId,packingCharges,deliveryCost);
     }
 }

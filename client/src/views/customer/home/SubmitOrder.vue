@@ -20,7 +20,7 @@
             style="text-align: center; font-size: 16px; color: #666"
             v-if="customerOrder.type == 0"
           >
-            {{ diningTableInfo.name }}
+            {{ diningTableInfo.serialNumber }}
           </div>
         </el-col>
       </el-row>
