@@ -15,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface WalletService extends IService<Wallet> {
 
     Result<Wallet> infoById(String walletId);
+
+    Result<?> recharge(String walletId, Double amount);
 }

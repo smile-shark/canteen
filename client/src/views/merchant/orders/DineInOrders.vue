@@ -3,11 +3,7 @@
     <!-- 筛选区域 -->
     <el-form :inline="true" :model="searchForm" class="search-form">
       <el-form-item label="订单编号">
-        <el-input
-          v-model="searchForm.orderNo"
-          placeholder="请输入"
-          clearable
-        />
+        <el-input v-model="searchForm.orderNo" placeholder="请输入" clearable />
       </el-form-item>
       <el-form-item label="请选择门店">
         <el-select
@@ -16,8 +12,12 @@
           clearable
         >
           <el-option label="全部" value="">全部</el-option>
-          <el-option label="泛海国际店" value="泛海国际店">泛海国际店</el-option>
-          <el-option label="大悦城店" value="大悦城店">大悦城店</el-option>
+          <el-option
+            v-for="(shop, index) in shopOptions"
+            :key="index"
+            :label="shop.name"
+            :value="shop.shopId"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="下单时间">
@@ -28,7 +28,7 @@
           value-format="yyyy-MM-dd"
           clearable
         />
-        <span style="margin: 0 5px;">—</span>
+        <span style="margin: 0 5px">—</span>
         <el-date-picker
           v-model="searchForm.endTime"
           type="date"
@@ -38,61 +38,75 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleQuery">查询</el-button>
+        <el-button type="primary" @click="handleSearch">查询</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 数据列表 & 导出按钮 -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      "
+    >
       <div></div>
       <el-button type="warning" @click="handleExport">导出</el-button>
     </div>
 
     <!-- 订单表格 -->
-    <el-table
-      :data="tableData"
-      border
-      style="width: 100%"
-    >
+    <el-table :data="tableData" border style="width: 100%">
       <el-table-column
-        prop="orderNo"
+        prop="customerOrderId"
         label="订单编号"
         align="center"
+        width="400"
       />
       <el-table-column
-        prop="orderTime"
+        prop="createTime"
         label="下单时间"
         align="center"
-      />
-      <el-table-column
-        prop="orderAmount"
-        label="订单金额"
-        align="center"
-      />
-      <el-table-column
-        prop="store"
-        label="所属门店"
-        align="center"
-      />
-      <el-table-column
-        prop="tableNo"
-        label="桌号"
-        align="center"
-      />
-      <el-table-column
-        prop="cashier"
-        label="收银员"
-        align="center"
-      />
-      <el-table-column
-        prop="orderStatus"
-        label="订单状态"
-        align="center"
-      />
-      <el-table-column
-        label="操作"
-        align="center"
+        width="320"
       >
+      <template slot-scope="scope">
+        {{formatDateTime(scope.row.createTime)}}
+      </template>
+    </el-table-column>
+      <el-table-column prop="allPrice" label="订单金额" align="center">
+        <template #default="scope">
+          <span>￥{{ scope.row.allPrice }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="所属门店" align="center" width="160">
+        <template #default="scope">
+          {{
+            shopOptions.find((item) => item.shopId == scope.row.shopId)?.name
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="tableNum" label="桌号" align="center" />
+      <el-table-column prop="state" label="订单状态" align="center">
+        <template #default="scope">
+          {{
+            [
+              "待付款",
+              "待收取",
+              "已完成",
+              "已取消",
+              "待评价",
+              "未处理",
+              "已接单",
+              "已拒绝",
+              "已送达",
+              "已自提",
+              "已作废",
+              "已退款",
+            ].find((item, index) => index == scope.row.state)
+          }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" fixed="right">
         <template #default="scope">
           <el-button type="text" @click="handleView(scope.row)">查看</el-button>
         </template>
@@ -101,115 +115,159 @@
 
     <!-- 分页 -->
     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      @current-change="handleSearch"
       :current-page="pagination.page"
-      :page-sizes="[10, 20, 30, 40]"
+      background
       :page-size="pagination.size"
-      layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.total"
-      style="margin-top: 10px; text-align: right;"
+      style="margin-top: 10px; text-align: right"
     />
 
     <!-- 查看订单弹窗 -->
-    <el-dialog
-      title="订单详情"
-      :visible.sync="viewDialogVisible"
-      width="600px"
-    >
+    <el-dialog title="订单详情" :visible.sync="viewDialogVisible" width="600px">
       <el-descriptions
         :column="1"
-        border
         style="width: 100%"
+        title="台桌信息"
+        v-if="viewOrder.diningTableId"
       >
-        <el-descriptions-item label="订单编号">{{ viewOrder.orderNo }}</el-descriptions-item>
-        <el-descriptions-item label="下单时间">{{ viewOrder.orderTime }}</el-descriptions-item>
-        <el-descriptions-item label="订单金额">{{ viewOrder.orderAmount }}</el-descriptions-item>
-        <el-descriptions-item label="所属门店">{{ viewOrder.store }}</el-descriptions-item>
-        <el-descriptions-item label="桌号">{{ viewOrder.tableNo }}</el-descriptions-item>
-        <el-descriptions-item label="收银员">{{ viewOrder.cashier }}</el-descriptions-item>
-        <el-descriptions-item label="订单状态">{{ viewOrder.orderStatus }}</el-descriptions-item>
-        <el-descriptions-item label="其他信息">
-          <span>这里可扩展订单详情，如菜品、备注等</span>
+        <el-descriptions-item label="所属门店">{{
+          shopOptions.find((item) => item.shopId == viewOrder.shopId)?.name
+        }}</el-descriptions-item>
+        <el-descriptions-item label="桌号">{{
+          viewOrder.tableNum
+        }}</el-descriptions-item>
+      </el-descriptions>
+      <el-descriptions
+        :column="1"
+        style="width: 100%"
+        title="菜品信息"
+        v-if="viewOrder.customerOrderCuisines"
+      >
+        <el-descriptions-item label="菜品详情">
+          <el-table :data="viewOrder.customerOrderCuisines">
+            <el-table-column prop="cuisineNum" label="编号"></el-table-column>
+            <el-table-column prop="name" label="菜品名称"></el-table-column>
+            <el-table-column label="单价" >
+              <template #default="scope"> ￥{{ scope.row.price }} </template>
+            </el-table-column>
+            <el-table-column prop="num" label="数量"></el-table-column>
+            <el-table-column label="总价" >
+              <template #default="scope">
+                ￥{{ scope.row.price * scope.row.num }}
+              </template>
+            </el-table-column>
+          </el-table>
         </el-descriptions-item>
+      </el-descriptions>
+      <el-descriptions title="订单信息" :column="2">
+        <el-descriptions-item label="订单编号">{{ viewOrder.customerOrderId }}</el-descriptions-item>
+        <el-descriptions-item label="订单状态">{{ [
+              "待付款",
+              "待收取",
+              "已完成",
+              "已取消",
+              "待评价",
+              "未处理",
+              "已接单",
+              "已拒绝",
+              "已送达",
+              "已自提",
+              "已作废",
+              "已退款",
+            ].find((item, index) => index == viewOrder.state) }}</el-descriptions-item>
+            <el-descriptions-item label="订单金额">{{ viewOrder.allPrice }}</el-descriptions-item>
+            <el-descriptions-item label="下单时间">{{ formatDateTime(viewOrder.createTime) }}</el-descriptions-item>
+            <el-descriptions-item label="支付方式">{{ [
+              '微信支付','支付宝支付','现金支付','银行卡支付','会员卡支付'
+            ].find((item,index)=>index==viewOrder.payType) }}</el-descriptions-item>
+            <el-descriptions-item label="支付时间">{{ formatDateTime(viewOrder.payTime) }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import api from "@/api";
+import { formatDateTime } from "@/api";
 export default {
-  name: 'DiningOrderPage',
+  name: "DiningOrderPage",
   data() {
     return {
+      formatDateTime:formatDateTime,
       // 筛选表单
       searchForm: {
-        orderNo: '',
-        store: '',
-        startTime: '',
-        endTime: ''
+        orderNo: "",
+        store: "",
+        startTime: "",
+        endTime: "",
       },
       // 表格数据
-      tableData: [
-        {
-          orderNo: '2021091008181',
-          orderTime: '2021-09-10 12:00:12',
-          orderAmount: '¥ 500.00',
-          store: '大悦城店',
-          tableNo: '1F0010',
-          cashier: '李四',
-          orderStatus: '已结账'
-        },
-        {
-          orderNo: '2021091008181',
-          orderTime: '2021-09-10 12:00:12',
-          orderAmount: '¥ 500.00',
-          store: '泛海国际店',
-          tableNo: '1F0010',
-          cashier: '李四',
-          orderStatus: '已结账'
-        }
-        // 可继续补充更多模拟数据...
-      ],
+      tableData: [],
       // 分页配置
       pagination: {
         page: 1,
         size: 10,
-        total: 100 // 模拟共100条数据
+        total: 0, // 模拟共100条数据
       },
       // 查看订单弹窗
       viewDialogVisible: false,
-      viewOrder: {}
-    }
+      viewOrder: {},
+      shopOptions: [],
+    };
   },
   methods: {
     // 查询按钮
-    handleQuery() {
-      // 模拟筛选逻辑，可根据 searchForm 过滤 tableData
-      console.log('查询条件:', this.searchForm);
-      // 这里可扩展：根据 searchForm 过滤数据，更新 tableData
+    handleSearch(page) {
+      if (typeof page != "number") page = 1;
+      this.pagination.page = page;
+      api.customerOrder
+        .pageList(
+          this.pagination.page,
+          this.pagination.size,
+          0,
+          this.searchForm.orderNo,
+          this.searchForm.store,
+          this.searchForm.startTime,
+          this.searchForm.endTime
+        )
+        .then((res) => {
+          if (res.data.code == 200) {
+            this.tableData = res.data.data.records;
+            this.pagination.total = res.data.data.total;
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        });
     },
     // 导出按钮
     handleExport() {
-      this.$message.success('模拟导出操作，可结合后端实现真实导出');
-    },
-    // 分页 - 每页条数变化
-    handleSizeChange(val) {
-      this.pagination.size = val;
-      // 模拟页码变化后重新获取数据，实际需结合接口
-    },
-    // 分页 - 当前页变化
-    handleCurrentChange(val) {
-      this.pagination.page = val;
-      // 模拟页码变化后重新获取数据，实际需结合接口
+      this.$message.success("模拟导出操作，可结合后端实现真实导出");
     },
     // 查看订单
     handleView(row) {
       this.viewOrder = row;
+      this.viewOrder.customerOrderCuisines = [];
       this.viewDialogVisible = true;
-    }
-  }
-}
+      // 查询一些数据下来
+      api.customerOrderCuisine
+        .listByCustomerOrderId(row.customerOrderId)
+        .then((res) => {
+          if (res.data.code == 200) {
+            this.viewOrder.customerOrderCuisines = res.data.data;
+          }
+        });
+    },
+  },
+  mounted() {
+    api.shop.simpleList().then((res) => {
+      if (res.data.code == 200) {
+        this.shopOptions = res.data.data;
+      }
+    });
+    this.handleSearch();
+  },
+};
 </script>
 
 <style scoped>

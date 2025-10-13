@@ -154,6 +154,8 @@ public class ShopServiceImp extends ServiceImpl<ShopMapper, Shop> implements Sho
         if (!removeById(id)) {
             throw new BusinessException(ResultCode.DELETE_ERROR);
         }
+        // 删除原有的信息
+        stringRedisTemplate.opsForGeo().remove("shop_location",id);
         return Result.success(ResultCode.DELETE_SUCCESS);
     }
 

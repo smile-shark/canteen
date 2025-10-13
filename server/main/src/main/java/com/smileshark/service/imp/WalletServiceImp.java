@@ -1,5 +1,8 @@
 package com.smileshark.service.imp;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.smileshark.code.ResultCode;
 import com.smileshark.common.Result;
 import com.smileshark.entity.Wallet;
 import com.smileshark.mapper.WalletMapper;
@@ -23,5 +26,11 @@ public class WalletServiceImp extends ServiceImpl<WalletMapper, Wallet> implemen
     @Override
     public Result<Wallet> infoById(String walletId) {
         return Result.success(baseMapper.selectById(walletId));
+    }
+
+    @Override
+    public Result<?> recharge(String walletId, Double amount) {
+        update(new LambdaUpdateWrapper<>(Wallet.class).setSql("balance = balance + " + amount).eq(Wallet::getWalletId, walletId));
+        return Result.success(ResultCode.RECHARGE_SUCCESS);
     }
 }

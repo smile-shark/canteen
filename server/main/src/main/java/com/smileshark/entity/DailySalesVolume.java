@@ -3,8 +3,8 @@ package com.smileshark.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDate;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -15,8 +15,9 @@ import lombok.experimental.Accessors;
  * @author smile鲨鱼
  * @since 2025年08月04日
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 @TableName("daily_sales_volume")
 public class DailySalesVolume {

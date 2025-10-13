@@ -21,6 +21,7 @@ import ShopList from "@/views/customer/ShopList.vue";
 import CustomerLogin from "@/views/customer/Login.vue";
 import CustomerScanQrCode from "@/views/customer/ScanQrCode.vue";
 import CustomerSubmitOrder from "@/views/customer/home/SubmitOrder.vue";
+import CustomerPaymentDuePage from "@/views/customer/home/PaymentDuePage.vue";
 
 Vue.use(VueRouter);
 
@@ -300,6 +301,11 @@ const routes = [
     name: "CustomerScanQrCode",
     component: CustomerScanQrCode,
   },
+  {
+    path: '/customer/home/paymentduepage',
+    name: 'CustomerPaymentDuePage',
+    component: CustomerPaymentDuePage
+  }
 ];
 
 const router = new VueRouter({

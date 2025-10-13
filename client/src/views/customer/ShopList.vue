@@ -235,11 +235,16 @@ export default {
       this.lat=data.position.kT
       this.lng=data.position.KL
       this.handleSearch();
+    },
+    onCompleteSecond(data){
+      this.lat=data.position[1]
+      this.lng=data.position[0]
+      this.handleSearch();
     }
   },
   mounted() {
     // 这里需要获取用户的定位，然后根据定位来查找对应的门店
-    AMap(this.onComplete)
+    AMap(this.onComplete,this.onCompleteSecond)
   },
 };
 </script>

@@ -246,6 +246,52 @@ export default {
       myapi.post("/customerOrder/dineInOrder", null, {
         params: { cuisineId, orderType, isAdd, diningTableId },
       }),
+    placeOrderNow: (
+      orderType,
+      diningTableId,
+      discountCouponCustomerId,
+      deliveryAddressId,
+      packingCharges,
+      deliveryCost
+    ) =>
+      myapi.post("/customerOrder/placeOrderNow", null, {
+        params: {
+          orderType,
+          diningTableId,
+          discountCouponCustomerId,
+          deliveryAddressId,
+          packingCharges,
+          deliveryCost,
+        },
+      }),
+    placeOrderGet: (customerOrderId) =>
+      myapi.get("/customerOrder/placeOrderGet", {
+        params: { customerOrderId },
+      }),
+    payOrder: (customerOrderId, payType) =>
+      myapi.post("/customerOrder/payOrder", null, {
+        params: { customerOrderId, payType },
+      }),
+    pageList: (
+      page,
+      size,
+      type,
+      customerOrderId,
+      shopId,
+      createTimeStart,
+      createTimeEnd
+    ) =>
+      myapi.get("/customerOrder/pageList", {
+        params: {
+          page: page,
+          size: size,
+          type: type,
+          customerOrderId: customerOrderId,
+          shopId: shopId,
+          createTimeStart: formatDateTime(createTimeStart),
+          createTimeEnd: formatDateTime(createTimeEnd),
+        },
+      }),
   },
   discountCoupon: {
     pageList: (page, size, type, shopId) =>
@@ -261,14 +307,20 @@ export default {
     usableCoupon: (shopId, cuisineIds, price) =>
       myapi.get("/discountCoupon/usableCoupon", {
         params: { shopId, cuisineIds, price },
-        paramsSerializer:{
-          indexes:null
-        }
+        paramsSerializer: {
+          indexes: null,
+        },
       }),
   },
   discountCouponCustomer: {
     list: (state) =>
       myapi.get("/discountCouponCustomer/list", { params: { state } }),
+  },
+  customerOrderCuisine: {
+    listByCustomerOrderId: (customerOrderId) =>
+      myapi.get("/customerOrderCuisine/listByCustomerOrderId", {
+        params: { customerOrderId },
+      }),
   },
 };
 

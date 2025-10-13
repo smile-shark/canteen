@@ -4,9 +4,7 @@ import com.smileshark.common.Result;
 import com.smileshark.entity.Wallet;
 import com.smileshark.service.WalletService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -24,5 +22,9 @@ public class WalletController {
     @GetMapping("/infoById")
     public Result<Wallet> infoById(String id) {
         return walletService.infoById(id);
+    }
+    @PostMapping("/recharge")
+    public Result<?> recharge(@RequestParam String walletId, @RequestParam Double amount) {
+        return walletService.recharge(walletId, amount);
     }
 }

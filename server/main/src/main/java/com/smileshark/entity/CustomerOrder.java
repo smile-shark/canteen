@@ -124,9 +124,14 @@ public class CustomerOrder {
     /**
      * 是否被用户删除(0：未删除、1：已删除)
      */
-    @TableField("delete")
+    @TableField("`delete`")
     private Integer delete;
+
+    @TableField("shop_id")
+    private String shopId;
 
     @TableField(exist = false)
     private List<CustomerOrderCuisine> customerOrderCuisines;
+    @TableField(exist = false)
+    private String tableNum;
 }

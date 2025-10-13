@@ -169,7 +169,7 @@
                   ? 'line-through'
                   : 'none',
               }"
-              >￥{{ customerOrder.allPrice }}
+              >￥{{ customerOrder.allPrice + packingCharges + deliveryCost }}
             </span>
             <span
               v-if="selectedCoupon.discountCoupon"
@@ -178,7 +178,10 @@
               <span v-if="selectedCoupon.discountCoupon.type == 0">
                 ￥{{
                   (
-                    customerOrder.allPrice - selectedCoupon.discountCoupon.price
+                    customerOrder.allPrice -
+                    selectedCoupon.discountCoupon.price +
+                    packingCharges +
+                    deliveryCost
                   ).toFixed(2)
                 }}
               </span>
@@ -187,7 +190,9 @@
                   (
                     (customerOrder.allPrice *
                       selectedCoupon.discountCoupon.discount) /
-                    10
+                      10 +
+                    packingCharges +
+                    deliveryCost
                   ).toFixed(2)
                 }}折
               </span>
@@ -202,7 +207,7 @@
             color: white;
             padding: 10px 20px;
           "
-          @click="submitOrder"
+          @click.native="submitOrder"
         >
           提交订单
         </el-col>
@@ -270,18 +275,22 @@ export default {
     return {
       customerOrder: {},
       diningTableInfo: {},
+      deliveryAddressInfo: {},
       discountCouponList: [],
       shopInfo: {},
       selectedCoupon: {},
       showSelectCoupon: {
         visible: false,
       },
+      packingCharges: 0, // 打包费
+      deliveryCost: 0, // 配送费
     };
   },
   methods: {
     selectCoupon(coupon) {
       this.selectedCoupon = coupon;
-      this.customerOrder.discountCouponCustomerId=coupon.discountCouponCustomerId
+      this.customerOrder.discountCouponCustomerId =
+        coupon.discountCouponCustomerId;
       this.showSelectCoupon.visible = false;
     },
     showSelectCoupons() {
@@ -304,17 +313,29 @@ export default {
     },
     // 提交订单方法，可根据实际需求对接接口
     submitOrder() {
-      // 可在这里编写调用提交订单接口的逻辑
-      console.log("提交订单，订单数据：", this.customerOrder);
-      // 示例：调用 api 提交订单
-      // api.order.submit(this.customerOrder).then(res => {
-      //   if (res.data.code === 200) {
-      //     this.$message.success('订单提交成功');
-      //     // 提交成功后的逻辑，比如跳转到支付页等
-      //   } else {
-      //     this.$message.error('订单提交失败，请重试');
-      //   }
-      // });
+      api.customerOrder
+        .placeOrderNow(
+          this.customerOrder.type,
+          this.diningTableInfo.diningTableId,
+          this.selectedCoupon.discountCouponCustomerId,
+          this.deliveryAddressInfo.deliveryAddressId,
+          this.packingCharges,
+          this.deliveryCost
+        )
+        .then((res) => {
+          if (res.data.code == 200) {
+            this.$message.success(res.data.msg);
+            // 转跳到订单支付页面
+            this.$router.push({
+              path: "/customer/home/paymentduepage",
+              query: {
+                customerOrderId: res.data.data,
+              },
+            });
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        });
     },
   },
   created() {

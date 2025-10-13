@@ -55,7 +55,7 @@ public class RabbitMQConfig {
                 // 设置死信路由键
                 .withArgument("x-dead-letter-routing-key", DLX_ROUTING_KEY)
                 // 设置队列消息过期时间（毫秒）
-                .withArgument("x-message-ttl", 60*15) // 15分钟过期
+                .withArgument("x-message-ttl", 60*15*1000) // 15分钟过期
                 .build();
     }
 

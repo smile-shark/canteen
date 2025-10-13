@@ -387,7 +387,10 @@ export default {
     // socket连接
     connect() {
       // 创建WebSocket连接
-      const socket = new WebSocket("ws://localhost:8080/ws");
+      // const socket = new WebSocket("ws://localhost:8080/ws");
+      
+      const socket = new WebSocket(`ws://${location.hostname}:8080/ws`);
+      // const socket = new WebSocket("wss://54c6aed0.r38.cpolar.top/ws"); // 使用内网穿透时因为图片传输的数据量过大，所以暂时不使用这个
       this.stompClient = Stomp.over(socket);
       this.stompClient.debug = () => {}; // 禁用调试日志
 

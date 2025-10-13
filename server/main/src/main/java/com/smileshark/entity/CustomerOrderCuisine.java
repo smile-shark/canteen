@@ -14,11 +14,17 @@ import lombok.experimental.Accessors;
  * @since 2025年08月04日
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
 @TableName("customer_order_cuisine")
 public class CustomerOrderCuisine {
+
+    public CustomerOrderCuisine(String customerOrderId, String cuisineId, Integer num, Integer cuisineOrder) {
+        this.customerOrderId = customerOrderId;
+        this.cuisineId = cuisineId;
+        this.num = num;
+        this.cuisineOrder = cuisineOrder;
+    }
 
     /**
      * 客户订单id
@@ -40,4 +46,12 @@ public class CustomerOrderCuisine {
      */
     @TableField("cuisine_order")
     private Integer cuisineOrder;
+
+    @TableField(exist = false)
+    private String name;
+    @TableField(exist = false)
+    private String cuisineNum ;
+    @TableField(exist = false)
+    private Double price;
+
 }

@@ -28,6 +28,7 @@ public class OrderErrorCustomer {
     @RabbitListener(queues = RabbitMQConfig.DLX_QUEUE)
     @Transactional(rollbackFor = Exception.class)
     public void processOrderError(String customerOrderId) {
+        System.out.println("处理过期订单：" + customerOrderId);
         // 在redis中查询这个对应的订单，如果没有就说明订单已经处理完毕，可以忽略
         String json = stringRedisTemplate.opsForValue().get(RedisKeyUtils.formatKey(PLACE_ORDER, customerOrderId));
         if (json == null) {
@@ -42,7 +43,7 @@ public class OrderErrorCustomer {
         }
         // 2. 恢复用户对应的优惠券的状态
         if(customerOrder.getDiscountCouponCustomerId()!= null && !customerOrder.getDiscountCouponCustomerId().isEmpty()){
-            discountCouponCustomerMapper.update(new LambdaUpdateWrapper<>(DiscountCouponCustomer.class).set(DiscountCouponCustomer::getState,0).eq(DiscountCouponCustomer::getDiscountCouponCustomerId,customerOrder.getDiscountCouponCustomerId()));
+            discountCouponCustomerMapper.update(new LambdaUpdateWrapper<>(DiscountCouponCustomer.class).set(DiscountCouponCustomer::getState,0).set(DiscountCouponCustomer::getUseTime,null).eq(DiscountCouponCustomer::getDiscountCouponCustomerId,customerOrder.getDiscountCouponCustomerId()));
         }
     }
 }

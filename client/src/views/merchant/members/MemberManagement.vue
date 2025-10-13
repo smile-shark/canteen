@@ -56,6 +56,7 @@
         prop="account"
         label="账号"
         align="center"
+        width="240"
       ></el-table-column>
       <el-table-column prop="level" label="会员类别" align="center">
         <template #default="scope">
@@ -97,7 +98,12 @@
         prop="createTime"
         label="创建日期"
         align="center"
-      ></el-table-column>
+        width="220"
+      >
+      <template #default="scope">
+        {{ formatDateTime(scope.row.createTime) }}
+      </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
           <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
@@ -255,11 +261,13 @@
 
 <script>
 import api from "@/api";
+import { formatDateTime } from "@/api";
 
 export default {
   name: "MemberManagement",
   data() {
     return {
+      formatDateTime:formatDateTime,
       discountCouponList: [],
       sendDiscountCoupon: {
         visible: false,
@@ -308,6 +316,13 @@ export default {
         .then((res) => {
           if (res.data.code == 200) {
             this.$message.success(res.data.msg);
+            api.discountCoupon.sendCouponList().then((res) => {
+              if (res.data.code == 200) {
+                this.discountCouponList = res.data.data;
+              } else {
+                this.$message.error("获取优惠券失败");
+              }
+            });
           } else {
             this.$message.error(res.data.msg);
           }

@@ -22,26 +22,93 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**");
         registry.addInterceptor(customerInterceptor)
                 .addPathPatterns(
-                        "/customerOrder/takeOutAndDineInOrder",
-                        "/shop/pageListByRange",
-                        "/shop/infoById",
-                        "/cuisineType/list",
                         "/cuisine/cuisineServiceList",
+                        "/cuisine/getSimpleCuisineById",
+                        "/cuisineType/list",
+                        "/customerOrder/dineInOrder",
+                        "/customerOrder/placeOrderGet",
+                        "/customerOrder/placeOrderNow",
+                        "/customerOrder/payOrder",
+                        "/customerOrder/takeOutAndDineInOrder",
+                        "/delivery/infoById",
                         "/diningTable/infoById",
-                        "/wallet/infoById",
+                        "/discountCoupon/usableCoupon",
                         "/discountCouponCustomer/list",
-                        "/discountCoupon/usableCoupon"
+                        "/shop/infoById",
+                        "/shop/pageListByRange",
+                        "/wallet/infoById"
                 );
         registry.addInterceptor(staffInterceptor);
-        registry.addInterceptor(merchantInterceptor);
+        registry.addInterceptor(merchantInterceptor)
+                .addPathPatterns(
+                        "/area/infoByAreaId",
+                        "/area/listById",
+                        "/cuisine/add",
+                        "/cuisine/delete",
+                        "/cuisine/infoById",
+                        "/cuisine/inventoryPageList",
+                        "/cuisine/pageList",
+                        "/cuisine/simpleListByShopId",
+                        "/cuisine/update",
+                        "/cuisineComponent/add",
+                        "/cuisineComponent/delete",
+                        "/cuisineComponent/list",
+                        "/cuisineType/add",
+                        "/cuisineType/delete",
+                        "/cuisineType/list",
+                        "/customer/pageList",
+                        "/delivery/infoById",
+                        "/delivery/saveOrUpdate",
+                        "/discountCoupon/add",
+                        "/discountCoupon/pageList",
+                        "/discountCoupon/sendCoupon",
+                        "/discountCoupon/sendCouponList",
+                        "/diningTable/add",
+                        "/diningTable/delete",
+                        "/diningTable/pageList",
+                        "/diningTable/update",
+                        "/diningTableType/delete",
+                        "/diningTableType/list",
+                        "/diningTableType/update",
+                        "/province/list",
+                        "/rawMaterial/add",
+                        "/rawMaterial/delete",
+                        "/rawMaterial/pageList",
+                        "/rawMaterial/update",
+                        "/rawMaterialType/add",
+                        "/rawMaterialType/delete",
+                        "/rawMaterialType/list",
+                        "/shop/add",
+                        "/shop/delete",
+                        "/shop/pageList",
+                        "/shop/pageListDineIn",
+                        "/shop/pageListTakeOut",
+                        "/shop/simpleList",
+                        "/shop/update",
+                        "/staff/add",
+                        "/staff/delete",
+                        "/staff/pageList",
+                        "/staff/simpleListByShopId",
+                        "/staff/update",
+                        "/staffLoginLog/pageList",
+                        "/styleOfCooking/add",
+                        "/styleOfCooking/delete",
+                        "/styleOfCooking/list",
+                        "/taste/add",
+                        "/taste/delete",
+                        "/taste/list",
+                        "/workingSchedule/add",
+                        "/workingSchedule/pageList"
+                );
         registry.addInterceptor(globalEndInterceptor)
                 .addPathPatterns("/**").excludePathPatterns(
-                        "/customer/passwordLogin",
                         "/staff/login",
+                        "/merchant/login",
                         "/customer/register",
+                        "/customer/passwordLogin",
                         "/customer/verifyCodeLogin",
-                        "merchant/login",
-                        "/global/sendEmail"
+                        "/global/sendEmail",
+                        "/global/addressToPos"
                 );
     }
 }

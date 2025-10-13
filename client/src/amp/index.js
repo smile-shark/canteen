@@ -1,6 +1,6 @@
 // amp.js
 import AMapLoader from "@amap/amap-jsapi-loader";
-export function AMap(onComplete) {
+export function AMap(onComplete, onCompleteSecond) {
   window._AMapSecurityConfig = {
     securityJsCode: "1ed63c4a9418f8b7142007aea096a860", // 安全密钥
   };
@@ -50,21 +50,21 @@ export function AMap(onComplete) {
         geolocation.getCityInfo(function (status, result) {
           if (status == "complete") {
             onCityComplete(result);
-            resolve();
+            // resolve();
           }
           if (status == "error") {
             onCityError(result);
-            reject();
+            // reject();
           }
         });
         function onCityComplete(data) {
           console.log("城市定位数据：", data);
+          onCompleteSecond(data);
           // data是具体的定位信息
         }
         function onCityError(data) {
           console.log("城市定位错误信息：", data);
           // data是具体的定位信息
-          ElMessage.error(`获取定位失败，失败原因：${data.message}`);
         }
       }
     });
