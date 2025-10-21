@@ -12,9 +12,9 @@ spring:
       host: localhost
       port: 6380
   mail:
-    host: smtp.qq.com
-    username: 488089248@qq.com
-    password: ligogminhrvacbae
+    host: # 参考example
+    username: # 参考example
+    password: # 参考 example
     ssl:
       enabled: true
   rabbitmq:
