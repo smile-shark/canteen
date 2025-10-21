@@ -1,0 +1,37 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/canteen?useSSL=false
+    username: root
+    password: 123456
+  data:
+    redis:
+      password: 123456
+      host: localhost
+      port: 6380
+  mail:
+    host: // smtp服务器地址 smtp.qq.com
+    username: // 邮箱地址 488089248@qq.com
+    password: // 邮箱授权码 ligogm*****cbae
+    ssl:
+      enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitMQLite
+    password: rabbitMQLite
+    virtual-host: rabbitMQTest
+redis:
+  key:
+    key5min: 'verify:email:limit:5min:'
+    keyDay: 'verify:email:limit:day:'
+token:
+  key: 'smileshark,token,key'
+  effective-time:
+    short-m: 10
+    long-h: 10
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
